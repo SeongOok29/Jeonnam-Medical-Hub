@@ -38,40 +38,1396 @@
       --sans:    'Noto Sans KR', sans-serif;
     }
 
-    /* ===== PLACEHOLDER SECTIONS (will be filled in next steps) ===== */
-    nav      { min-height: 64px;  background: rgba(13,27,42,0.9); display:flex; align-items:center; padding: 0 2rem; position:fixed; top:0; width:100%; z-index:100; }
-    #hero    { min-height: 100vh; background: var(--bg);  display:flex; align-items:center; justify-content:center; padding-top:64px; }
-    #stats   { min-height: 40vh;  background: var(--bg3); padding: 5rem 2rem; }
-    #problem { min-height: 40vh;  background: var(--bg);  padding: 5rem 2rem; }
-    #chart   { min-height: 40vh;  background: var(--bg3); padding: 5rem 2rem; }
-    #solution{ min-height: 40vh;  background: var(--bg2); padding: 5rem 2rem; }
-    #effects { min-height: 40vh;  background: var(--bg);  padding: 5rem 2rem; }
-    #pledge  { min-height: 40vh;  background: var(--bg3); padding: 5rem 2rem; }
-    footer   { min-height: 20vh;  background: #050e18;    padding: 3rem 2rem; }
+    /* ===== KEYFRAMES ===== */
+    @keyframes blink       { 0%,100%{opacity:1} 50%{opacity:0} }
+    @keyframes bounce      { 0%,100%{transform:translateY(0) rotate(45deg)} 50%{transform:translateY(8px) rotate(45deg)} }
+    @keyframes fadeUp      { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeIn      { from{opacity:0} to{opacity:1} }
+    @keyframes glowPulse   { 0%,100%{opacity:.15} 50%{opacity:.35} }
+    @keyframes scanLine    { from{transform:translateY(-100%)} to{transform:translateY(100vh)} }
+    @keyframes revealRight { from{clip-path:inset(0 100% 0 0)} to{clip-path:inset(0 0% 0 0)} }
+    @keyframes counterTick { 0%{transform:translateY(0)} 50%{transform:translateY(-4px)} 100%{transform:translateY(0)} }
 
-    /* ===== TEMP LABELS ===== */
-    .temp-label {
-      font-family: var(--serif);
-      font-size: 2rem;
+    /* ===== NAV ===== */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      height: 68px;
+      padding: 0 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background .4s ease, box-shadow .4s ease, backdrop-filter .4s ease;
+    }
+    nav.scrolled {
+      background: rgba(8, 15, 24, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 1px 0 var(--border);
+    }
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: .85rem;
+    }
+    .nav-logo-img {
+      height: 34px;
+      width: auto;
+    }
+    .nav-logo-fallback {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px; height: 34px;
+      background: var(--red);
+      border-radius: 6px;
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .03em;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .nav-party {
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .12em;
       color: var(--muted);
-      text-align: center;
-      opacity: 0.3;
+      text-transform: uppercase;
+      padding-right: .85rem;
+      border-right: 1px solid var(--border);
+    }
+    .nav-name {
+      font-family: var(--serif);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: .04em;
+    }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+    .nav-links {
+      display: none;
+      gap: 1.8rem;
+      list-style: none;
+    }
+    @media(min-width:768px){ .nav-links { display:flex; } }
+    .nav-links a {
+      font-size: .82rem;
+      color: var(--muted);
+      transition: color .2s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -3px; left: 0;
+      width: 0; height: 1px;
+      background: var(--red);
+      transition: width .25s ease;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-cta {
+      font-size: .8rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      padding: .45rem 1.1rem;
+      border: 1px solid var(--red);
+      color: var(--red);
+      border-radius: 3px;
+      transition: background .2s, color .2s;
+      white-space: nowrap;
+    }
+    .nav-cta:hover { background: var(--red); color: #fff; }
+
+    /* ===== HERO ===== */
+    #hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      padding: 68px 0 0;
+    }
+
+    /* Background layers */
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 20% 50%, rgba(230,57,70,.07) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 50% at 80% 20%, rgba(244,162,97,.05) 0%, transparent 55%),
+        linear-gradient(160deg, #070e17 0%, #0D1B2A 45%, #061018 100%);
+    }
+    /* Noise texture via SVG data URI */
+    .hero-noise {
+      position: absolute; inset: 0; z-index: 1;
+      opacity: .045;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 250px 250px;
+    }
+    /* Grid lines */
+    .hero-grid {
+      position: absolute; inset: 0; z-index: 1;
+      background-image:
+        linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+      background-size: 64px 64px;
+    }
+    /* Animated scan line */
+    .hero-scan {
+      position: absolute; inset: 0; z-index: 2; pointer-events: none; overflow: hidden;
+    }
+    .hero-scan::after {
+      content: '';
+      position: absolute; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(230,57,70,.15), transparent);
+      animation: scanLine 6s linear infinite;
+    }
+
+    /* Glow orbs */
+    .hero-orb {
+      position: absolute; border-radius: 50%; pointer-events: none; z-index: 1;
+    }
+    .hero-orb-1 {
+      width: 600px; height: 600px;
+      top: -100px; left: -150px;
+      background: radial-gradient(circle, rgba(230,57,70,.08) 0%, transparent 65%);
+      animation: glowPulse 4s ease-in-out infinite;
+    }
+    .hero-orb-2 {
+      width: 400px; height: 400px;
+      bottom: -50px; right: 10%;
+      background: radial-gradient(circle, rgba(244,162,97,.06) 0%, transparent 65%);
+      animation: glowPulse 5s ease-in-out infinite 1.5s;
+    }
+
+    /* Content */
+    .hero-inner {
+      position: relative; z-index: 10;
+      max-width: 1240px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 4rem 2rem 6rem;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+    @media(min-width:900px){
+      .hero-inner { grid-template-columns: 1.1fr .9fr; gap: 4rem; padding: 5rem 3rem 6rem; }
+    }
+
+    .hero-text { display: flex; flex-direction: column; gap: 0; }
+
+    .hero-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--red);
+      background: rgba(230,57,70,.1);
+      border: 1px solid rgba(230,57,70,.25);
+      padding: .35rem .85rem;
+      border-radius: 2px;
+      margin-bottom: 1.6rem;
+      width: fit-content;
+      opacity: 0;
+      animation: fadeUp .6s ease .2s both;
+    }
+    .hero-kicker-dot {
+      width: 6px; height: 6px;
+      background: var(--red);
+      border-radius: 50%;
+      animation: blink 1.4s ease infinite;
+    }
+
+    .hero-headline {
+      font-family: var(--serif);
+      font-size: clamp(2.8rem, 7.5vw, 5.5rem);
+      font-weight: 900;
+      line-height: 1.12;
+      color: var(--text);
+      margin-bottom: 1.8rem;
+      min-height: 1.12em;
+      opacity: 0;
+      animation: fadeUp .6s ease .4s both;
+    }
+    .hero-headline .cursor {
+      display: inline-block;
+      width: 4px;
+      height: .85em;
+      background: var(--red);
+      margin-left: 3px;
+      vertical-align: text-bottom;
+      animation: blink .75s ease infinite;
+    }
+
+    .hero-divider {
+      width: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--red), var(--gold));
+      margin-bottom: 1.8rem;
+      border-radius: 2px;
+      animation: revealRight .8s ease 2.2s both;
+    }
+
+    .hero-sub {
+      font-size: clamp(1rem, 2.2vw, 1.2rem);
+      color: var(--muted);
+      line-height: 1.75;
+      margin-bottom: 2.2rem;
+      max-width: 500px;
+      opacity: 0;
+      animation: fadeUp .6s ease 2.4s both;
+    }
+    .hero-sub strong { color: var(--gold); font-weight: 700; }
+
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      opacity: 0;
+      animation: fadeUp .6s ease 2.7s both;
+    }
+    .hero-meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: .15rem;
+    }
+    .hero-meta-num {
+      font-family: var(--serif);
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: var(--red);
+      line-height: 1;
+    }
+    .hero-meta-label {
+      font-size: .72rem;
+      color: var(--muted);
+      letter-spacing: .05em;
+    }
+    .hero-meta-divider {
+      width: 1px;
+      height: 40px;
+      background: var(--border);
+    }
+
+    /* Hero image side */
+    .hero-image-side {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      position: relative;
+      opacity: 0;
+      animation: fadeIn 1.2s ease .6s both;
+    }
+    .hero-img-frame {
+      position: relative;
+      width: 100%;
+      max-width: 440px;
+    }
+    /* Decorative frame */
+    .hero-img-frame::before {
+      content: '';
+      position: absolute;
+      top: -12px; right: -12px;
+      width: 60%; height: 60%;
+      border-top: 2px solid rgba(230,57,70,.3);
+      border-right: 2px solid rgba(230,57,70,.3);
+      z-index: 0;
       pointer-events: none;
+    }
+    .hero-img-frame::after {
+      content: '';
+      position: absolute;
+      bottom: -12px; left: -12px;
+      width: 60%; height: 60%;
+      border-bottom: 2px solid rgba(244,162,97,.25);
+      border-left: 2px solid rgba(244,162,97,.25);
+      z-index: 0;
+      pointer-events: none;
+    }
+    .hero-img-glow {
+      position: absolute;
+      bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 90%; height: 55%;
+      background: radial-gradient(ellipse, rgba(230,57,70,.18) 0%, transparent 70%);
+      z-index: 1; pointer-events: none;
+    }
+    .hero-img-frame img {
+      position: relative; z-index: 2;
+      width: 100%;
+      max-height: 560px;
+      object-fit: contain;
+      object-position: bottom;
+      filter: drop-shadow(0 24px 48px rgba(0,0,0,.6));
+    }
+    .hero-img-placeholder {
+      position: relative; z-index: 2;
+      width: 100%; height: 480px;
+      background: linear-gradient(160deg, #1b3a58 0%, #0d1b2a 100%);
+      border: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 1rem;
+      color: var(--muted); font-size: .9rem;
+    }
+    .hero-img-placeholder .ph-icon {
+      font-size: 3.5rem;
+      opacity: .25;
+    }
+    /* Badge on image */
+    .hero-badge {
+      position: absolute;
+      bottom: 2rem; left: -1.5rem;
+      z-index: 3;
+      background: rgba(8,15,24,.9);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(8px);
+      padding: .9rem 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      min-width: 200px;
+    }
+    .hero-badge-icon {
+      width: 40px; height: 40px;
+      background: rgba(230,57,70,.15);
+      border: 1px solid rgba(230,57,70,.3);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .hero-badge-text { font-size: .75rem; color: var(--muted); line-height: 1.5; }
+    .hero-badge-text strong { color: var(--red); display: block; font-size: .9rem; }
+
+    /* Scroll arrow */
+    .hero-scroll {
+      position: absolute;
+      bottom: 2.5rem; left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      display: flex; flex-direction: column; align-items: center; gap: .5rem;
+      cursor: pointer;
+      opacity: 0;
+      animation: fadeIn .8s ease 3.2s both;
+    }
+    .hero-scroll span {
+      font-size: .65rem;
+      letter-spacing: .2em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .hero-scroll-arrow {
+      width: 22px; height: 22px;
+      border-right: 2px solid rgba(176,184,193,.5);
+      border-bottom: 2px solid rgba(176,184,193,.5);
+      animation: bounce 1.6s ease infinite;
+      margin-top: -4px;
+    }
+
+    /* ===== SHARED UTILITIES ===== */
+    .section-inner { max-width: 1200px; margin: 0 auto; }
+    .section-label {
+      display: inline-flex; align-items: center; gap: .65rem;
+      font-size: .72rem; font-weight: 700; letter-spacing: .18em;
+      text-transform: uppercase; color: var(--red);
+      margin-bottom: 1rem;
+    }
+    .section-label::before {
+      content: ''; display: inline-block;
+      width: 24px; height: 2px; background: var(--red);
+    }
+    .section-title {
+      font-family: var(--serif);
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 700; line-height: 1.25;
+      margin-bottom: 1.2rem;
+    }
+    .section-desc { color: var(--muted); max-width: 580px; line-height: 1.75; }
+
+    /* scroll reveal */
+    .reveal {
+      opacity: 0; transform: translateY(36px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-left  { opacity:0; transform:translateX(-40px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal-left.visible { opacity:1; transform:translateX(0); }
+    .reveal-right { opacity:0; transform:translateX(40px);  transition: opacity .7s ease, transform .7s ease; }
+    .reveal-right.visible { opacity:1; transform:translateX(0); }
+
+    /* ===== STATS ===== */
+    #stats {
+      padding: 7rem 2rem;
+      background: var(--bg3);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      position: relative; overflow: hidden;
+    }
+    #stats::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--red), transparent);
+    }
+    .stats-header { margin-bottom: 4rem; }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media(min-width:768px){ .stats-grid { grid-template-columns: repeat(3,1fr); } }
+
+    .stat-card {
+      padding: 2.5rem 2rem;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.02);
+      position: relative; overflow: hidden;
+      transition: border-color .3s, transform .3s;
+      cursor: default;
+    }
+    .stat-card:hover { transform: translateY(-6px); }
+    .stat-card.red   { border-bottom: 3px solid var(--red); }
+    .stat-card.white { border-bottom: 3px solid rgba(255,255,255,.4); }
+    .stat-card.gold  { border-bottom: 3px solid var(--gold); }
+    .stat-card:hover.red   { border-color: var(--red);  }
+    .stat-card:hover.gold  { border-color: var(--gold); }
+
+    /* shimmer on hover */
+    .stat-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,.04) 50%, transparent 70%);
+      background-size: 200% 100%;
+      opacity: 0; transition: opacity .3s;
+    }
+    .stat-card:hover::before { opacity: 1; animation: shimmer 1s ease; }
+    @keyframes shimmer { from{background-position:200% center} to{background-position:-200% center} }
+
+    .stat-icon { font-size: 1.6rem; margin-bottom: 1.2rem; }
+    .stat-num {
+      font-family: var(--serif);
+      font-size: clamp(3rem, 7vw, 5rem);
+      font-weight: 900; line-height: 1;
+      margin-bottom: .5rem; display: block;
+    }
+    .stat-card.red   .stat-num { color: var(--red);  }
+    .stat-card.white .stat-num { color: var(--text); }
+    .stat-card.gold  .stat-num { color: var(--gold); }
+    .stat-label {
+      font-size: .9rem; font-weight: 700;
+      color: var(--text); margin-bottom: .6rem;
+    }
+    .stat-desc { font-size: .82rem; color: var(--muted); line-height: 1.65; }
+
+    /* flip-in for 꼴찌 */
+    @keyframes flipIn {
+      0%   { opacity:0; transform:perspective(400px) rotateX(-80deg); }
+      60%  { transform:perspective(400px) rotateX(10deg); }
+      100% { opacity:1; transform:perspective(400px) rotateX(0); }
+    }
+    .flip-in { display:inline-block; opacity:0; }
+    .flip-in.go { animation: flipIn .7s ease both; }
+
+    /* ===== PROBLEM FLOW ===== */
+    #problem {
+      padding: 7rem 2rem;
+      background: var(--bg);
+    }
+    .problem-header { margin-bottom: 4rem; }
+    .flow-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    @media(min-width:900px){
+      .flow-wrap { flex-direction: row; align-items: stretch; }
+    }
+    .flow-step {
+      flex: 1;
+      padding: 2rem 1.75rem;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.02);
+      position: relative;
+      opacity: 0; transform: translateY(28px);
+      transition: opacity .55s ease, transform .55s ease, border-color .3s;
+    }
+    .flow-step.visible { opacity:1; transform:translateY(0); }
+    .flow-step:hover { border-color: rgba(230,57,70,.3); }
+    @media(min-width:900px){
+      .flow-step { transform: translateX(-28px); border-right: none; }
+      .flow-step:last-child { border-right: 1px solid var(--border); }
+      .flow-step.visible { transform: translateX(0); }
+    }
+    .flow-step:last-child {
+      border-color: rgba(230,57,70,.35);
+      background: rgba(230,57,70,.04);
+    }
+    .flow-step:last-child .flow-title { color: var(--red); }
+
+    .flow-connector {
+      display: flex; align-items: center; justify-content: center;
+      padding: .75rem 0; color: var(--muted); font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+    @media(min-width:900px){
+      .flow-connector {
+        padding: 0; width: 36px;
+        background: rgba(255,255,255,.015);
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        font-size: 1rem;
+      }
+    }
+    .flow-step-num {
+      font-size: .68rem; font-weight: 700;
+      letter-spacing: .15em; color: var(--muted);
+      margin-bottom: 1rem;
+    }
+    .flow-icon { font-size: 2.2rem; margin-bottom: .9rem; display:block; }
+    .flow-title {
+      font-family: var(--serif); font-size: 1.05rem;
+      font-weight: 700; color: var(--text);
+      margin-bottom: .65rem; line-height: 1.4;
+    }
+    .flow-desc { font-size: .82rem; color: var(--muted); line-height: 1.65; }
+
+    /* ===== BAR CHART ===== */
+    #chart {
+      padding: 7rem 2rem;
+      background: var(--bg3);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      position: relative; overflow: hidden;
+    }
+    #chart::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    .chart-header { margin-bottom: 3.5rem; }
+    .chart-area {
+      display: flex;
+      align-items: flex-end;
+      gap: clamp(.5rem, 2vw, 1.5rem);
+      height: 300px;
+      padding-bottom: 3rem;
+      position: relative;
+    }
+    /* horizontal grid lines */
+    .chart-area::before {
+      content: '';
+      position: absolute; inset: 0 0 3rem 0;
+      background-image: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,.04) 0, rgba(255,255,255,.04) 1px,
+        transparent 1px, transparent 25%
+      );
+      pointer-events: none;
+    }
+    .bar-col {
+      flex: 1;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-end;
+      gap: .4rem; height: 100%; position: relative;
+    }
+    .bar-val {
+      font-size: clamp(.7rem,.9vw,.9rem); font-weight: 700;
+      color: var(--text); opacity: 0;
+      transition: opacity .3s ease 1.1s;
+    }
+    .bar-col.animated .bar-val { opacity: 1; }
+    .bar {
+      width: 100%; max-width: 80px;
+      height: 0; border-radius: 3px 3px 0 0;
+      transition: height 1.2s cubic-bezier(.25,.46,.45,.94);
+      position: relative;
+    }
+    .bar.gray { background: rgba(176,184,193,.28); }
+    .bar.gold { background: linear-gradient(to top, var(--gold), rgba(244,162,97,.55)); }
+    .bar.red  { background: linear-gradient(to top, var(--red), rgba(230,57,70,.55)); }
+    @keyframes barPulse { 0%,100%{box-shadow:0 0 0 0 rgba(230,57,70,.35)} 50%{box-shadow:0 0 0 8px rgba(230,57,70,0)} }
+    .bar.red { animation: barPulse 2.2s ease infinite; }
+    .bar-city {
+      font-size: clamp(.6rem,.75vw,.78rem); color: var(--muted);
+      text-align: center; position: absolute;
+      bottom: -2.4rem; left: 50%; transform: translateX(-50%);
+      white-space: nowrap;
+    }
+    .bar-city.hl  { color: var(--red);  font-weight: 700; }
+    .bar-city.gld { color: var(--gold); font-weight: 700; }
+    .chart-note {
+      margin-top: 2rem; font-size: .75rem;
+      color: var(--muted); opacity: .55;
+    }
+
+    /* ===== SOLUTION ===== */
+    #solution {
+      padding: 7rem 2rem;
+      background: var(--bg2);
+    }
+    .solution-header { margin-bottom: 4rem; }
+    .solution-heading {
+      font-family: var(--serif);
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 900; line-height: 1.3;
+      margin-bottom: 1.2rem;
+    }
+    .solution-heading .em { color: var(--gold); }
+    .solution-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media(min-width:768px){ .solution-grid { grid-template-columns: repeat(3,1fr); } }
+    .sol-card {
+      padding: 2rem 1.75rem;
+      background: rgba(255,255,255,.025);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--red);
+      position: relative; overflow: hidden;
+      transition: transform .3s ease, box-shadow .3s ease, border-left-color .3s;
+    }
+    .sol-card:hover {
+      transform: translateY(-7px);
+      box-shadow: 0 24px 48px rgba(0,0,0,.35);
+      border-left-color: var(--gold);
+    }
+    .sol-card::after {
+      content: '';
+      position: absolute; top: 0; right: 0;
+      width: 100px; height: 100px;
+      background: radial-gradient(circle, rgba(230,57,70,.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .sol-tag {
+      display: inline-block;
+      font-size: .68rem; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--red);
+      background: rgba(230,57,70,.1);
+      border: 1px solid rgba(230,57,70,.2);
+      padding: .2rem .6rem; border-radius: 2px;
+      margin-bottom: 1.2rem;
+    }
+    .sol-num {
+      font-family: var(--serif);
+      font-size: 3.5rem; font-weight: 900;
+      color: rgba(230,57,70,.12); line-height: 1;
+      margin-bottom: .6rem;
+    }
+    .sol-icon { font-size: 2rem; margin-bottom: .9rem; display:block; }
+    .sol-title {
+      font-family: var(--serif); font-size: 1.05rem;
+      font-weight: 700; color: var(--text);
+      margin-bottom: .75rem; line-height: 1.45;
+    }
+    .sol-desc { font-size: .82rem; color: var(--muted); line-height: 1.7; }
+
+    /* ===== EFFECTS ===== */
+    #effects {
+      padding: 7rem 2rem;
+      background: var(--bg);
+    }
+    .effects-header { margin-bottom: 4rem; }
+    .effects-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 4rem;
+    }
+    @media(min-width:900px){
+      .effects-grid { grid-template-columns: 1fr 1.4fr; align-items: center; }
+    }
+    .big-counter {
+      text-align: center;
+      padding: 3rem 2rem;
+      background: rgba(230,57,70,.04);
+      border: 1px solid rgba(230,57,70,.15);
+      position: relative; overflow: hidden;
+    }
+    .big-counter::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at center, rgba(230,57,70,.07) 0%, transparent 65%);
+    }
+    .big-counter-label {
+      font-size: .75rem; font-weight: 700;
+      letter-spacing: .15em; text-transform: uppercase;
+      color: var(--red); margin-bottom: .5rem;
+      position: relative;
+    }
+    .big-counter-num {
+      font-family: var(--serif);
+      font-size: clamp(4rem, 9vw, 6.5rem);
+      font-weight: 900; color: var(--red);
+      line-height: 1; position: relative;
+      display: flex; align-items: baseline;
+      justify-content: center; gap: .08em;
+    }
+    .big-counter-unit {
+      font-size: clamp(1.5rem, 3vw, 2.5rem);
+      color: var(--muted); font-family: var(--serif);
+    }
+    .big-counter-sub {
+      font-size: .9rem; color: var(--muted);
+      margin-top: .75rem; position: relative; line-height: 1.65;
+    }
+    .progress-list { display: flex; flex-direction: column; gap: 2.5rem; }
+    .prog-item {}
+    .prog-head {
+      display: flex; justify-content: space-between;
+      align-items: baseline; margin-bottom: .7rem;
+    }
+    .prog-label { font-size: .92rem; font-weight: 500; color: var(--text); }
+    .prog-vals  { font-size: .82rem; color: var(--muted); }
+    .prog-vals .tgt { color: var(--gold); font-weight: 700; }
+    .prog-track {
+      height: 10px;
+      background: rgba(255,255,255,.06);
+      border-radius: 5px;
+      overflow: hidden; position: relative;
+    }
+    .prog-bar {
+      position: absolute; top: 0; left: 0; height: 100%;
+      border-radius: 5px; width: 0;
+      transition: width 1.4s cubic-bezier(.25,.46,.45,.94);
+    }
+    .prog-bar.cur  { background: rgba(176,184,193,.35); }
+    .prog-bar.tgt  { background: linear-gradient(90deg, rgba(244,162,97,.6), var(--gold)); }
+    .prog-foot {
+      display: flex; justify-content: space-between;
+      font-size: .72rem; color: var(--muted); margin-top: .4rem;
+    }
+    .prog-foot .tgt { color: var(--gold); }
+    .effects-note {
+      padding: 1.5rem; margin-top: 1.5rem;
+      background: rgba(244,162,97,.05);
+      border: 1px solid rgba(244,162,97,.15);
+      border-left: 3px solid var(--gold);
+      font-size: .875rem; color: var(--muted); line-height: 1.75;
+    }
+    .effects-note strong { color: var(--gold); }
+
+    /* ===== PLEDGE ===== */
+    #pledge {
+      padding: 7rem 2rem;
+      background: var(--bg3);
+      border-top: 1px solid var(--border);
+      position: relative; overflow: hidden;
+    }
+    #pledge::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--red), transparent);
+    }
+    .pledge-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3.5rem; align-items: center;
+    }
+    @media(min-width:900px){
+      .pledge-inner { grid-template-columns: 1fr 1.35fr; }
+    }
+    .pledge-img-wrap { position: relative; }
+    .pledge-frame {
+      position: relative;
+    }
+    .pledge-frame::before {
+      content: '';
+      position: absolute; inset: -2px;
+      background: linear-gradient(135deg, rgba(230,57,70,.4), rgba(244,162,97,.3));
+      z-index: 0;
+    }
+    .pledge-frame img {
+      position: relative; z-index: 1;
+      width: 100%; max-height: 500px;
+      object-fit: cover; object-position: top;
+      filter: brightness(.88) contrast(1.05);
+      display: block;
+    }
+    .pledge-placeholder {
+      position: relative; z-index: 1;
+      width: 100%; height: 420px;
+      background: linear-gradient(160deg, #1b3a58, #0d1b2a);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 1rem;
+      color: var(--muted); font-size: .9rem;
+    }
+    .pledge-placeholder .ph-icon { font-size: 3.5rem; opacity: .25; }
+    .pledge-text { display: flex; flex-direction: column; gap: 2rem; }
+    .pledge-quote {
+      font-family: var(--serif);
+      font-size: clamp(1.45rem, 3vw, 2.1rem);
+      font-weight: 700; line-height: 1.45;
+      padding-left: 1.4rem;
+      border-left: 4px solid var(--red);
+      color: var(--text);
+    }
+    .pledge-quote strong { color: var(--red); }
+    .pledge-list { list-style: none; display: flex; flex-direction: column; gap: 1rem; }
+    .pledge-list li {
+      display: flex; align-items: flex-start;
+      gap: .9rem; font-size: .92rem; line-height: 1.65;
+    }
+    .pledge-list li::before {
+      content: '✦'; color: var(--gold);
+      flex-shrink: 0; margin-top: .15em;
+    }
+    .pledge-sig {
+      display: flex; align-items: center; gap: 1rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid var(--border);
+    }
+    .pledge-sig-logo img { height: 36px; }
+    .pledge-sig-logo-fb {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px;
+      background: var(--red); border-radius: 6px;
+      font-size: .65rem; font-weight: 700; color: #fff;
+    }
+    .pledge-sig-name {
+      font-family: var(--serif); font-weight: 700; font-size: 1.05rem;
+    }
+    .pledge-sig-title { font-size: .78rem; color: var(--muted); }
+
+    /* ===== FOOTER ===== */
+    footer {
+      padding: 4rem 2rem 2.5rem;
+      background: #050e18;
+      border-top: 1px solid var(--border);
+    }
+    .footer-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+    @media(min-width:768px){ .footer-inner { grid-template-columns: 1.4fr 1fr 1fr; } }
+    .footer-brand {}
+    .footer-brand-top {
+      display: flex; align-items: center; gap: .75rem;
+      margin-bottom: 1rem;
+    }
+    .footer-brand-top img { height: 30px; }
+    .footer-brand-name { font-family: var(--serif); font-size: 1.05rem; font-weight: 700; }
+    .footer-brand-desc { font-size: .8rem; color: var(--muted); line-height: 1.7; }
+    .footer-col h4 {
+      font-size: .72rem; font-weight: 700;
+      letter-spacing: .12em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: .9rem;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: .5rem; }
+    .footer-col a {
+      font-size: .82rem; color: var(--muted);
+      transition: color .2s;
+    }
+    .footer-col a:hover { color: var(--text); }
+    .footer-col p { font-size: .82rem; color: var(--muted); line-height: 1.75; }
+    .footer-bottom {
+      max-width: 1200px; margin: 2.5rem auto 0;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between;
+      flex-wrap: wrap; gap: .75rem;
+      font-size: .72rem; color: rgba(176,184,193,.4);
     }
   </style>
 </head>
 <body>
 
-  <nav><span style="color:var(--muted); font-size:.85rem;">NAV — 순천갑 김문수</span></nav>
+  <!-- ===== NAV ===== -->
+  <nav id="nav">
+    <div class="nav-left">
+      <img src="images/logo.png" alt="더불어민주당" class="nav-logo-img"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex'">
+      <span class="nav-logo-fallback" style="display:none">민주</span>
+      <span class="nav-party">더불어민주당</span>
+      <span class="nav-name">순천갑 김문수</span>
+    </div>
+    <div class="nav-right">
+      <ul class="nav-links">
+        <li><a href="#stats">현실</a></li>
+        <li><a href="#chart">데이터</a></li>
+        <li><a href="#solution">해결책</a></li>
+        <li><a href="#pledge">공약</a></li>
+      </ul>
+      <a href="#pledge" class="nav-cta">공약 보기</a>
+    </div>
+  </nav>
 
-  <section id="hero">    <p class="temp-label">HERO</p>   </section>
-  <section id="stats">   <p class="temp-label">STATS</p>  </section>
-  <section id="problem"> <p class="temp-label">PROBLEM</p></section>
-  <section id="chart">   <p class="temp-label">CHART</p>  </section>
-  <section id="solution"><p class="temp-label">SOLUTION</p></section>
-  <section id="effects"> <p class="temp-label">EFFECTS</p></section>
-  <section id="pledge">  <p class="temp-label">PLEDGE</p> </section>
-  <footer>               <p class="temp-label">FOOTER</p> </footer>
+  <!-- ===== HERO ===== -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-noise"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-scan"></div>
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
 
+    <div class="hero-inner">
+      <!-- Left: Text -->
+      <div class="hero-text">
+        <div class="hero-kicker">
+          <span class="hero-kicker-dot"></span>
+          긴급 보고 — 전남 의료 위기
+        </div>
+
+        <h1 class="hero-headline">
+          <span id="typing-el"></span><span class="cursor"></span>
+        </h1>
+
+        <div class="hero-divider"></div>
+
+        <p class="hero-sub">
+          <strong>55만 전남동부권 주민</strong>의 생명이<br>
+          지금 이 순간에도 위협받고 있습니다.
+        </p>
+
+        <div class="hero-meta">
+          <div class="hero-meta-item">
+            <span class="hero-meta-num">0개</span>
+            <span class="hero-meta-label">전남 의과대학 수</span>
+          </div>
+          <div class="hero-meta-divider"></div>
+          <div class="hero-meta-item">
+            <span class="hero-meta-num">+35%</span>
+            <span class="hero-meta-label">중증환자 사망률 초과</span>
+          </div>
+          <div class="hero-meta-divider"></div>
+          <div class="hero-meta-item">
+            <span class="hero-meta-num">꼴찌</span>
+            <span class="hero-meta-label">3차병원 병상 수 전국</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Image -->
+      <div class="hero-image-side">
+        <div class="hero-img-frame">
+          <div class="hero-img-glow"></div>
+          <img src="images/kim_serious.png" alt="순천갑 국회의원 김문수"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="hero-img-placeholder" style="display:none">
+            <span class="ph-icon">👤</span>
+            <span>김문수 의원</span>
+          </div>
+          <div class="hero-badge">
+            <div class="hero-badge-icon">🏥</div>
+            <div class="hero-badge-text">
+              <strong>전국 유일</strong>
+              의대 없는 광역자치단체
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll cue -->
+    <div class="hero-scroll" onclick="document.getElementById('stats').scrollIntoView({behavior:'smooth'})">
+      <span>scroll</span>
+      <div class="hero-scroll-arrow"></div>
+    </div>
+  </section>
+
+  <!-- ===== STATS ===== -->
+  <section id="stats">
+    <div class="section-inner">
+      <div class="stats-header reveal">
+        <div class="section-label">충격적 현실</div>
+        <h2 class="section-title">전남 의료 붕괴의 민낯</h2>
+        <p class="section-desc">전국 유일하게 의과대학이 없는 광역자치단체. 이것이 전라남도의 현실입니다.</p>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card red reveal">
+          <div class="stat-icon">📈</div>
+          <span class="stat-num" data-count="35" data-prefix="+" data-suffix="%">0%</span>
+          <div class="stat-label">전국 평균 대비 중증환자 사망률</div>
+          <p class="stat-desc">제때 치료받지 못한 결과. 전국 평균보다 35% 높은 중증환자 사망률이 그 증거입니다.</p>
+        </div>
+        <div class="stat-card white reveal">
+          <div class="stat-icon">🏫</div>
+          <span class="stat-num">0개</span>
+          <div class="stat-label">전남 지역 의과대학 수</div>
+          <p class="stat-desc">전국 17개 광역자치단체 중 전남만이 단 하나의 의과대학도 없습니다.</p>
+        </div>
+        <div class="stat-card gold reveal">
+          <div class="stat-icon">🏥</div>
+          <span class="stat-num flip-in">꼴찌</span>
+          <div class="stat-label">전국 3차병원 병상 수 순위</div>
+          <p class="stat-desc">인구 천명당 0.6개 — 전국 최하위. 서울(2.1개)의 28% 수준에 불과합니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PROBLEM ===== -->
+  <section id="problem">
+    <div class="section-inner">
+      <div class="problem-header reveal">
+        <div class="section-label">문제 구조 분석</div>
+        <h2 class="section-title">왜 이런 일이 생기나?</h2>
+        <p class="section-desc">의대 부재가 만들어낸 구조적 의료 공백. 악순환의 고리를 끊어야 합니다.</p>
+      </div>
+      <div class="flow-wrap" id="flow-wrap">
+        <div class="flow-step" data-delay="0">
+          <div class="flow-step-num">STEP 01</div>
+          <span class="flow-icon">🏫</span>
+          <h3 class="flow-title">의과대학 전무</h3>
+          <p class="flow-desc">전남 전체에 의과대학이 단 하나도 없어 지역 의사 양성 기반 자체가 없습니다.</p>
+        </div>
+        <div class="flow-connector">→</div>
+        <div class="flow-step" data-delay="150">
+          <div class="flow-step-num">STEP 02</div>
+          <span class="flow-icon">👨‍⚕️</span>
+          <h3 class="flow-title">전문의 만성 부족</h3>
+          <p class="flow-desc">의사 양성이 안 되니 전문의가 수도권으로 이탈하고 지역 공급이 끊깁니다.</p>
+        </div>
+        <div class="flow-connector">→</div>
+        <div class="flow-step" data-delay="300">
+          <div class="flow-step-num">STEP 03</div>
+          <span class="flow-icon">🚑</span>
+          <h3 class="flow-title">중증 치료 공백</h3>
+          <p class="flow-desc">3차병원이 없으니 중증 환자가 광주·서울까지 수백 킬로미터를 이동해야 합니다.</p>
+        </div>
+        <div class="flow-connector">→</div>
+        <div class="flow-step" data-delay="450">
+          <div class="flow-step-num">STEP 04</div>
+          <span class="flow-icon">⚠️</span>
+          <h3 class="flow-title">사망률 증가</h3>
+          <p class="flow-desc">골든타임을 놓친 중증환자들. 전국 평균보다 35% 높은 사망률이 그 증거입니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ===== CHART ===== -->
+  <section id="chart">
+    <div class="section-inner">
+      <div class="chart-header reveal">
+        <div class="section-label">데이터 분석</div>
+        <h2 class="section-title">인구 1천명당 3차병원 병상 수<br><span style="color:var(--red)">— 전국 최하위</span></h2>
+        <p class="section-desc">광주·전남은 서울의 4분의 1 수준. 이것이 의료 불평등의 실체입니다.</p>
+      </div>
+      <div class="chart-area" id="chart-area">
+        <div class="bar-col" data-h="100"  data-v="2.1">
+          <div class="bar-val">2.1</div>
+          <div class="bar gray" style="position:relative"><span class="bar-city">서울</span></div>
+        </div>
+        <div class="bar-col" data-h="85.7" data-v="1.8">
+          <div class="bar-val">1.8</div>
+          <div class="bar gray" style="position:relative"><span class="bar-city">부산</span></div>
+        </div>
+        <div class="bar-col" data-h="81"   data-v="1.7">
+          <div class="bar-val">1.7</div>
+          <div class="bar gray" style="position:relative"><span class="bar-city">대구</span></div>
+        </div>
+        <div class="bar-col" data-h="66.7" data-v="1.4">
+          <div class="bar-val">1.4</div>
+          <div class="bar gray" style="position:relative"><span class="bar-city">인천</span></div>
+        </div>
+        <div class="bar-col" data-h="61.9" data-v="1.3">
+          <div class="bar-val">1.3</div>
+          <div class="bar gold" style="position:relative"><span class="bar-city gld">전국평균</span></div>
+        </div>
+        <div class="bar-col" data-h="28.6" data-v="0.6">
+          <div class="bar-val">0.6</div>
+          <div class="bar red" style="position:relative"><span class="bar-city hl">광주·전남</span></div>
+        </div>
+      </div>
+      <p class="chart-note">* 출처: 보건복지부 의료기관 현황 통계 | 단위: 병상/인구 1천명 | 2023년 기준</p>
+    </div>
+  </section>
+
+  <!-- ===== SOLUTION ===== -->
+  <section id="solution">
+    <div class="section-inner">
+      <div class="solution-header reveal">
+        <div class="section-label">정책 제안</div>
+        <h2 class="solution-heading">해법은 하나입니다<span class="em"> — 전남 국립의대 설립</span></h2>
+        <p class="section-desc">구조적 문제에는 구조적 해법이 필요합니다. 국가가 나서야 합니다.</p>
+      </div>
+      <div class="solution-grid">
+        <div class="sol-card reveal">
+          <div class="sol-tag">핵심 제안 ①</div>
+          <div class="sol-num">01</div>
+          <span class="sol-icon">🏛️</span>
+          <h3 class="sol-title">1대학 2부속병원 체제 구축</h3>
+          <p class="sol-desc">동부권 순천과 서부권 목포에 각각 부속병원을 두는 1대학 2부속병원 체제로, 전남 전역에 균형 잡힌 의료 교육·서비스를 제공합니다.</p>
+        </div>
+        <div class="sol-card reveal">
+          <div class="sol-tag">핵심 제안 ②</div>
+          <div class="sol-num">02</div>
+          <span class="sol-icon">⚕️</span>
+          <h3 class="sol-title">성가롤로병원 3차병원 기능 강화</h3>
+          <p class="sol-desc">순천 성가롤로병원을 권역 3차병원으로 육성하여 동부권 주민들이 지역 내에서 중증 질환 치료를 받을 수 있는 기반을 만듭니다.</p>
+        </div>
+        <div class="sol-card reveal">
+          <div class="sol-tag">핵심 제안 ③</div>
+          <div class="sol-num">03</div>
+          <span class="sol-icon">🔨</span>
+          <h3 class="sol-title">순천의료원 신축 이전 및 의대 부속병원 전환</h3>
+          <p class="sol-desc">노후화된 순천의료원을 신축 이전하고, 국립의대 부속병원으로 전환해 공공의료와 의학교육을 동시에 강화합니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ===== EFFECTS ===== -->
+  <section id="effects">
+    <div class="section-inner">
+      <div class="effects-header reveal">
+        <div class="section-label">기대 효과</div>
+        <h2 class="section-title">국립의대 설립으로<br>달라지는 전남</h2>
+      </div>
+      <div class="effects-grid">
+        <div class="big-counter reveal">
+          <div class="big-counter-label">연간 사망자 감소 예상</div>
+          <div class="big-counter-num">
+            <span id="deaths-num">0</span>
+            <span class="big-counter-unit">명</span>
+          </div>
+          <p class="big-counter-sub">적절한 치료를 받지 못해<br>생을 마감하는 전남 주민</p>
+        </div>
+        <div class="reveal">
+          <div class="progress-list" id="prog-list">
+            <div class="prog-item">
+              <div class="prog-head">
+                <span class="prog-label">중증환자 자체충족률</span>
+                <span class="prog-vals">57.6% → <span class="tgt">80%</span></span>
+              </div>
+              <div class="prog-track">
+                <div class="prog-bar cur" data-w="57.6"></div>
+                <div class="prog-bar tgt" data-w="80"></div>
+              </div>
+              <div class="prog-foot"><span>현재 57.6%</span><span class="tgt">목표 80%</span></div>
+            </div>
+            <div class="prog-item">
+              <div class="prog-head">
+                <span class="prog-label">중등증환자 자체충족률</span>
+                <span class="prog-vals">69.2% → <span class="tgt">90%</span></span>
+              </div>
+              <div class="prog-track">
+                <div class="prog-bar cur" data-w="69.2"></div>
+                <div class="prog-bar tgt" data-w="90"></div>
+              </div>
+              <div class="prog-foot"><span>현재 69.2%</span><span class="tgt">목표 90%</span></div>
+            </div>
+          </div>
+          <div class="effects-note">
+            국립의대 설립은 단순한 교육 기관 신설이 아닙니다.<br>
+            <strong>55만 전남동부권 주민의 생존권</strong>을 지키는 일입니다.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PLEDGE ===== -->
+  <section id="pledge">
+    <div class="pledge-inner">
+      <div class="pledge-img-wrap reveal-left">
+        <div class="pledge-frame">
+          <img src="images/kim_active.png" alt="김문수 의원 공약"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="pledge-placeholder" style="display:none">
+            <span class="ph-icon">✊</span>
+            <span>김문수 의원</span>
+          </div>
+        </div>
+      </div>
+      <div class="pledge-text reveal-right">
+        <div class="section-label">의원 공약</div>
+        <blockquote class="pledge-quote">
+          "전남 국립의대 설립을<br><strong>반드시 실현</strong>하겠습니다"
+        </blockquote>
+        <ul class="pledge-list">
+          <li>국회 입성 즉시 「전남 국립의과대학 설립 특별법」 발의 및 입법 추진</li>
+          <li>정부·교육부·복지부 협력을 통한 예산 확보 및 부지 선정 신속 추진</li>
+          <li>동부권 순천·서부권 목포 2개 부속병원 체제로 전남 전역 의료 균형 실현</li>
+        </ul>
+        <div class="pledge-sig">
+          <div class="pledge-sig-logo">
+            <img src="images/logo.png" alt="더불어민주당"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex'">
+            <span class="pledge-sig-logo-fb" style="display:none">민주</span>
+          </div>
+          <div>
+            <div class="pledge-sig-name">김 문 수</div>
+            <div class="pledge-sig-title">더불어민주당 순천갑 국회의원</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="footer-brand-top">
+          <img src="images/logo.png" alt="더불어민주당"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex'">
+          <span class="pledge-sig-logo-fb" style="display:none">민주</span>
+          <span class="footer-brand-name">김문수</span>
+        </div>
+        <p class="footer-brand-desc">더불어민주당 순천갑 국회의원<br>전남 국립의대 설립 추진위원</p>
+      </div>
+      <div class="footer-col">
+        <h4>주요 공약</h4>
+        <ul>
+          <li><a href="#solution">전남 국립의대 설립</a></li>
+          <li><a href="#solution">성가롤로병원 3차병원 기능 강화</a></li>
+          <li><a href="#solution">순천의료원 신축 이전</a></li>
+          <li><a href="#effects">의료 자체충족률 개선</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>연락처</h4>
+        <p>순천갑 선거사무소<br>전라남도 순천시<br>📞 (061) 000-0000<br>✉️ contact@placeholder.kr</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2024 더불어민주당 순천갑 김문수 선거사무소. All rights reserved.</span>
+      <span>전남 국립의대 설립 캠페인</span>
+    </div>
+  </footer>
+
+  <script>
+    // ── Sticky nav
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive: true });
+
+    // ── Typing animation
+    (function() {
+      const el = document.getElementById('typing-el');
+      const text = '전남에는 의대가 없다';
+      let i = 0;
+      function type() {
+        if (i <= text.length) {
+          el.textContent = text.slice(0, i++);
+          setTimeout(type, i === 1 ? 700 : 95);
+        }
+      }
+      setTimeout(type, 600);
+    })();
+
+    // ── Parallax on hero inner
+    const heroInner = document.querySelector('.hero-inner');
+    window.addEventListener('scroll', () => {
+      const sy = window.scrollY;
+      if (sy < window.innerHeight) {
+        heroInner.style.transform = `translateY(${sy * 0.22}px)`;
+      }
+    }, { passive: true });
+
+    // ── Counter animation
+    function animateCount(el, end, prefix, suffix, duration) {
+      let start = 0;
+      const t0 = performance.now();
+      function step(t) {
+        const p = Math.min((t - t0) / duration, 1);
+        const ease = 1 - Math.pow(1 - p, 3);
+        el.textContent = prefix + Math.round(ease * end) + suffix;
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    // ── Intersection Observer (general reveal + stats + flow)
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const el = entry.target;
+
+        // general reveal
+        if (el.classList.contains('reveal') ||
+            el.classList.contains('reveal-left') ||
+            el.classList.contains('reveal-right')) {
+          el.classList.add('visible');
+        }
+
+        // stats section — counters + flip
+        if (el.id === 'stats') {
+          el.querySelectorAll('[data-count]').forEach(c => {
+            animateCount(c, +c.dataset.count,
+              c.dataset.prefix || '', c.dataset.suffix || '', 2000);
+          });
+          setTimeout(() => {
+            el.querySelectorAll('.flip-in').forEach(f => f.classList.add('go'));
+          }, 400);
+        }
+
+        // flow steps — staggered
+        if (el.id === 'flow-wrap') {
+          el.querySelectorAll('.flow-step').forEach(s => {
+            const delay = parseInt(s.dataset.delay) || 0;
+            setTimeout(() => s.classList.add('visible'), delay);
+          });
+        }
+
+        io.unobserve(el);
+      });
+    }, { threshold: 0.18 });
+
+    document.querySelectorAll(
+      '.reveal, .reveal-left, .reveal-right, #stats, #flow-wrap'
+    ).forEach(el => io.observe(el));
+
+    // ── Bar chart animation
+    const chartIO = new IntersectionObserver(entries => {
+      if (!entries[0].isIntersecting) return;
+      const MAX_H = 240; // px
+      document.querySelectorAll('#chart-area .bar-col').forEach((col, i) => {
+        const pct = parseFloat(col.dataset.h);
+        const bar = col.querySelector('.bar');
+        setTimeout(() => {
+          bar.style.height = (pct / 100 * MAX_H) + 'px';
+          col.classList.add('animated');
+        }, i * 110);
+      });
+      chartIO.disconnect();
+    }, { threshold: 0.3 });
+    const chartArea = document.getElementById('chart-area');
+    if (chartArea) chartIO.observe(chartArea);
+
+    // ── Solution cards stagger
+    const solCards = document.querySelectorAll('.sol-card');
+    const solIO = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const idx = [...solCards].indexOf(entry.target);
+        setTimeout(() => entry.target.classList.add('visible'), idx * 150);
+        solIO.unobserve(entry.target);
+      });
+    }, { threshold: 0.15 });
+    solCards.forEach(c => solIO.observe(c));
+
+    // ── Effects section: big counter + progress bars
+    const effectsIO = new IntersectionObserver(entries => {
+      if (!entries[0].isIntersecting) return;
+      // big counter
+      const dn = document.getElementById('deaths-num');
+      if (dn) animateCount(dn, 500, '', '', 2500);
+      // progress bars
+      document.querySelectorAll('.prog-bar').forEach(bar => {
+        const w = parseFloat(bar.dataset.w);
+        const delay = bar.classList.contains('tgt') ? 500 : 200;
+        setTimeout(() => { bar.style.width = w + '%'; }, delay);
+      });
+      effectsIO.disconnect();
+    }, { threshold: 0.25 });
+    const effectsSec = document.getElementById('effects');
+    if (effectsSec) effectsIO.observe(effectsSec);
+  </script>
 </body>
 </html>

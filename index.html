@@ -6,146 +6,1279 @@
   <meta name="description" content="전남 국립의대 설립 | 순천갑 국회의원 김문수">
   <title>전남에는 의대가 없다 | 순천갑 김문수</title>
 
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700;900&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
-
-  <!-- Three.js -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js"></script>
 
   <style>
-    /* ── RESET ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--sans);
-      line-height: 1.7;
-      overflow-x: hidden;
-      cursor: none; /* custom cursor */
+      background: var(--bg); color: var(--text);
+      font-family: var(--sans); line-height: 1.7; overflow-x: hidden;
     }
-    @media (hover: none) { body { cursor: auto; } }
     img { max-width: 100%; display: block; }
     a { color: inherit; text-decoration: none; }
 
-    /* ── DESIGN TOKENS ── */
     :root {
-      --bg:      #03060d;
-      --bg2:     #070d1a;
-      --bg3:     #0a1525;
-      --panel:   rgba(10,21,37,0.85);
-      --red:     #ff2d3b;
-      --gold:    #ffaa55;
-      --cyan:    #00d4ff;
-      --purple:  #7b2fff;
-      --text:    #e8edf5;
-      --muted:   #7a8899;
-      --border:  rgba(255,255,255,0.06);
-      --glow-r:  rgba(255,45,59,0.35);
-      --glow-c:  rgba(0,212,255,0.25);
-      --serif:   'Noto Serif KR', serif;
-      --sans:    'Noto Sans KR', sans-serif;
+      --bg: #03060d; --bg2: #070d1a; --bg3: #0a1525;
+      --red: #ff2d3b; --gold: #ffaa55; --cyan: #00d4ff; --purple: #7b2fff;
+      --text: #e8edf5; --muted: #6a7888; --border: rgba(255,255,255,0.06);
+      --serif: 'Noto Serif KR', serif; --sans: 'Noto Sans KR', sans-serif;
     }
 
     /* ── KEYFRAMES ── */
-    @keyframes fadeUp     { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:none} }
-    @keyframes fadeIn     { from{opacity:0} to{opacity:1} }
-    @keyframes blink      { 0%,100%{opacity:1} 50%{opacity:0} }
-    @keyframes bounce     { 0%,100%{transform:translateY(0)rotate(45deg)} 50%{transform:translateY(8px)rotate(45deg)} }
-    @keyframes glow       { 0%,100%{opacity:.2} 50%{opacity:.5} }
-    @keyframes spin       { to{transform:rotate(360deg)} }
-    @keyframes charIn     { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:none} }
-    @keyframes scanLine   { from{top:-2px} to{top:100%} }
-    @keyframes hueShift   { to{filter:hue-rotate(360deg)} }
-    @keyframes borderFlow {
-      0%   { background-position: 0% 50%; }
-      50%  { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
+    @keyframes fadeUp  { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:none} }
+    @keyframes fadeIn  { from{opacity:0} to{opacity:1} }
+    @keyframes blink   { 0%,100%{opacity:1} 50%{opacity:0} }
+    @keyframes bounce  { 0%,100%{transform:translateY(0)rotate(45deg)} 50%{transform:translateY(9px)rotate(45deg)} }
+    @keyframes charIn  { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
+    @keyframes scanln  { from{top:0} to{top:100%} }
+    @keyframes orb     { 0%,100%{opacity:.12} 50%{opacity:.28} }
 
     /* ── SCROLL REVEAL ── */
     .reveal, .reveal-up, .reveal-left, .reveal-right {
-      opacity: 0;
-      transition: opacity .8s ease, transform .8s ease;
+      opacity:0; transition: opacity .8s ease, transform .8s ease;
     }
     .reveal-up    { transform: translateY(40px); }
-    .reveal-left  { transform: translateX(-40px); }
-    .reveal-right { transform: translateX(40px); }
-    .reveal.visible, .reveal-up.visible,
-    .reveal-left.visible, .reveal-right.visible {
-      opacity: 1; transform: none;
-    }
+    .reveal-left  { transform: translateX(-50px); }
+    .reveal-right { transform: translateX(50px); }
+    .reveal.on,.reveal-up.on,.reveal-left.on,.reveal-right.on { opacity:1; transform:none; }
 
     /* ── SHARED ── */
-    .inner { max-width: 1240px; margin: 0 auto; padding: 0 2rem; }
-    .label {
-      display: inline-flex; align-items: center; gap: .6rem;
-      font-size: .7rem; font-weight: 700; letter-spacing: .2em;
-      text-transform: uppercase; color: var(--cyan);
-      margin-bottom: 1rem;
+    .inner { max-width: 1240px; margin: 0 auto; padding: 0 2.5rem; }
+    .chip {
+      display:inline-flex; align-items:center; gap:.55rem;
+      font-size:.68rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+      color:var(--cyan); margin-bottom:1rem;
     }
-    .label::before { content:''; width:20px; height:1px; background:var(--cyan); }
-    .section-title {
-      font-family: var(--serif);
-      font-size: clamp(1.9rem, 4vw, 3.2rem);
-      font-weight: 900; line-height: 1.2;
-      margin-bottom: 1.2rem;
+    .chip::before { content:''; width:18px; height:1px; background:var(--cyan); flex-shrink:0; }
+    .s-title {
+      font-family:var(--serif);
+      font-size:clamp(1.9rem,4vw,3.2rem);
+      font-weight:900; line-height:1.2; margin-bottom:1.2rem;
     }
-    .section-desc { color: var(--muted); max-width: 560px; line-height: 1.8; }
+    .s-desc { color:var(--muted); max-width:560px; line-height:1.8; font-size:.95rem; }
 
-    /* placeholder sections — filled next steps */
-    #preloader, nav, #hero, #stats, #problem,
-    #chart, #solution, #effects, #pledge, footer {
-      position: relative;
+    /* ════════════════════════════════════
+       PRELOADER
+    ════════════════════════════════════ */
+    #preloader {
+      position:fixed; inset:0; z-index:9999;
+      background:var(--bg);
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center; gap:2rem;
+      transition: clip-path .9s cubic-bezier(.76,0,.24,1);
     }
-    #stats, #problem, #chart, #solution,
-    #effects, #pledge { padding: 7rem 0; }
-    footer { padding: 4rem 0 2rem; }
+    .pl-logo {
+      font-family:var(--serif); font-size:.9rem; font-weight:700;
+      letter-spacing:.3em; text-transform:uppercase; color:var(--muted);
+      animation: fadeIn .6s ease both;
+    }
+    .pl-num {
+      font-family:var(--serif);
+      font-size:clamp(4rem,12vw,9rem);
+      font-weight:900; line-height:1; color:var(--red);
+      letter-spacing:-.02em;
+    }
+    .pl-bar {
+      width:200px; height:1px;
+      background:rgba(255,255,255,.08);
+      position:relative; overflow:hidden;
+    }
+    .pl-bar-fill {
+      position:absolute; left:0; top:0; height:100%;
+      background:linear-gradient(90deg, var(--red), var(--cyan));
+      width:0; transition:width .1s linear;
+    }
+
+    /* ════════════════════════════════════
+       CUSTOM CURSOR  (desktop only)
+    ════════════════════════════════════ */
+    .c-dot, .c-ring {
+      position:fixed; pointer-events:none; z-index:10000;
+      border-radius:50%; transform:translate(-50%,-50%);
+    }
+    .c-dot {
+      width:6px; height:6px;
+      background:var(--red);
+      box-shadow:0 0 8px var(--red);
+      transition: opacity .2s;
+    }
+    .c-ring {
+      width:36px; height:36px;
+      border:1px solid rgba(255,45,59,.5);
+      transition: width .25s, height .25s, border-color .25s, background .25s;
+    }
+    .c-ring.hover {
+      width:56px; height:56px;
+      border-color:var(--cyan);
+      background:rgba(0,212,255,.06);
+    }
+    @media (hover:none) { .c-dot,.c-ring { display:none; } body { cursor:auto; } }
+
+    /* ════════════════════════════════════
+       NAV
+    ════════════════════════════════════ */
+    #nav {
+      position:fixed; top:0; left:0; right:0; z-index:500;
+      height:68px; padding:0 2.5rem;
+      display:flex; align-items:center; justify-content:space-between;
+      transition: background .4s, backdrop-filter .4s, box-shadow .4s;
+    }
+    #nav.solid {
+      background:rgba(3,6,13,.88);
+      backdrop-filter:blur(20px);
+      -webkit-backdrop-filter:blur(20px);
+      box-shadow:0 1px 0 var(--border);
+    }
+    .nav-left { display:flex; align-items:center; gap:.9rem; }
+    .nav-logo-img { height:32px; }
+    .nav-logo-fb  {
+      width:32px; height:32px; background:var(--red); border-radius:6px;
+      display:inline-flex; align-items:center; justify-content:center;
+      font-size:.6rem; font-weight:900; color:#fff; letter-spacing:.03em; flex-shrink:0;
+    }
+    .nav-sep  { width:1px; height:20px; background:var(--border); }
+    .nav-name { font-family:var(--serif); font-size:1.05rem; font-weight:700; }
+    .nav-links { display:none; gap:2rem; list-style:none; }
+    @media(min-width:768px){ .nav-links{display:flex;} }
+    .nav-links a {
+      font-size:.8rem; color:var(--muted);
+      transition:color .2s; position:relative;
+    }
+    .nav-links a::after {
+      content:''; position:absolute; bottom:-3px; left:0;
+      width:0; height:1px; background:var(--cyan); transition:width .3s;
+    }
+    .nav-links a:hover { color:var(--text); }
+    .nav-links a:hover::after { width:100%; }
+    .nav-cta {
+      font-size:.78rem; font-weight:700; letter-spacing:.1em;
+      padding:.45rem 1.2rem; border:1px solid var(--red); color:var(--red);
+      border-radius:3px; white-space:nowrap;
+      transition: background .2s, color .2s, transform .2s, box-shadow .2s;
+      display:inline-block;
+    }
+    .nav-cta:hover {
+      background:var(--red); color:#fff;
+      box-shadow:0 0 20px rgba(255,45,59,.4);
+      transform:translateY(-1px);
+    }
+
+    /* ════════════════════════════════════
+       HERO
+    ════════════════════════════════════ */
+    #hero {
+      position:relative; min-height:100vh;
+      display:flex; align-items:center;
+      overflow:hidden;
+    }
+    /* WebGL canvas — full bg */
+    #hero-canvas {
+      position:absolute; inset:0; width:100%; height:100%;
+      z-index:0; pointer-events:none;
+    }
+    /* atmospheric layers */
+    .hero-vignette {
+      position:absolute; inset:0; z-index:1; pointer-events:none;
+      background:radial-gradient(ellipse 80% 70% at 50% 50%, transparent 30%, #03060d 100%);
+    }
+    .hero-scan {
+      position:absolute; inset:0; z-index:2; pointer-events:none; overflow:hidden;
+    }
+    .hero-scan::after {
+      content:''; position:absolute; left:0; right:0; height:1px;
+      background:linear-gradient(90deg,transparent,rgba(0,212,255,.12),transparent);
+      animation:scanln 5s linear infinite;
+    }
+    /* content */
+    .hero-inner {
+      position:relative; z-index:10;
+      width:100%; max-width:1240px; margin:0 auto;
+      padding:7rem 2.5rem 5rem;
+      display:grid; grid-template-columns:1fr;
+      gap:3rem; align-items:center;
+    }
+    @media(min-width:900px){
+      .hero-inner { grid-template-columns:1fr 1fr; padding:8rem 2.5rem 6rem; }
+    }
+    /* kicker */
+    .hero-kicker {
+      display:inline-flex; align-items:center; gap:.55rem;
+      font-size:.7rem; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+      color:var(--red); background:rgba(255,45,59,.08);
+      border:1px solid rgba(255,45,59,.25); padding:.35rem .9rem; border-radius:2px;
+      margin-bottom:1.8rem; width:fit-content;
+      opacity:0; animation:fadeUp .6s ease .3s both;
+    }
+    .kicker-dot { width:5px; height:5px; background:var(--red); border-radius:50%; animation:blink 1.4s infinite; }
+    /* headline */
+    .hero-headline {
+      font-family:var(--serif);
+      font-size:clamp(2.8rem,7.5vw,5.8rem);
+      font-weight:900; line-height:1.1;
+      color:var(--text); min-height:1.1em;
+      margin-bottom:1.6rem;
+      opacity:0; animation:fadeUp .6s ease .5s both;
+    }
+    .hero-headline .cursor {
+      display:inline-block; width:4px; height:.8em;
+      background:var(--red); margin-left:4px; vertical-align:bottom;
+      animation:blink .75s infinite;
+    }
+    /* divider */
+    .hero-divider {
+      width:0; height:2px; margin-bottom:1.8rem;
+      background:linear-gradient(90deg,var(--red),var(--cyan));
+      animation:none; opacity:0;
+    }
+    .hero-divider.go { opacity:1; transition:width 1s ease; }
+    /* sub */
+    .hero-sub {
+      font-size:clamp(1rem,2vw,1.15rem); color:var(--muted);
+      line-height:1.8; margin-bottom:2rem; max-width:480px;
+      opacity:0; animation:fadeUp .6s ease 2.4s both;
+    }
+    .hero-sub strong { color:var(--gold); font-weight:700; }
+    /* split chars */
+    .split-char {
+      display:inline-block; overflow:hidden;
+      /* stagger set by JS */
+    }
+    .split-char span {
+      display:inline-block;
+      animation:charIn .5s ease both;
+    }
+    /* stats pills */
+    .hero-pills {
+      display:flex; flex-wrap:wrap; gap:1rem;
+      opacity:0; animation:fadeUp .6s ease 2.8s both;
+    }
+    .hero-pill {
+      padding:.5rem 1rem; background:rgba(255,255,255,.04);
+      border:1px solid var(--border); border-radius:3px;
+    }
+    .hero-pill strong { display:block; font-family:var(--serif); font-size:1.3rem; font-weight:900; color:var(--red); }
+    .hero-pill span   { font-size:.72rem; color:var(--muted); }
+    /* image side */
+    .hero-img-side {
+      display:flex; justify-content:center; align-items:flex-end;
+      position:relative;
+      opacity:0; animation:fadeIn 1.4s ease .8s both;
+    }
+    .hero-frame {
+      position:relative; width:100%; max-width:420px;
+    }
+    .hero-frame::before {
+      content:''; position:absolute; top:-14px; right:-14px;
+      width:55%; height:55%;
+      border-top:1px solid rgba(0,212,255,.25);
+      border-right:1px solid rgba(0,212,255,.25);
+      pointer-events:none;
+    }
+    .hero-frame::after {
+      content:''; position:absolute; bottom:-14px; left:-14px;
+      width:55%; height:55%;
+      border-bottom:1px solid rgba(255,45,59,.25);
+      border-left:1px solid rgba(255,45,59,.25);
+      pointer-events:none;
+    }
+    .hero-frame img {
+      width:100%; max-height:560px; object-fit:contain;
+      object-position:bottom; position:relative; z-index:1;
+      filter:drop-shadow(0 20px 60px rgba(0,0,0,.7));
+    }
+    .hero-frame-ph {
+      width:100%; height:460px; position:relative; z-index:1;
+      background:linear-gradient(160deg,#112244,#03060d);
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center; gap:.75rem;
+      color:var(--muted); font-size:.85rem;
+    }
+    .hero-frame-ph .ph-icon { font-size:3rem; opacity:.2; }
+    /* badge floating */
+    .hero-badge {
+      position:absolute; bottom:2rem; left:-1.5rem; z-index:2;
+      display:flex; align-items:center; gap:.75rem;
+      padding:.85rem 1.1rem; min-width:190px;
+      background:rgba(3,6,13,.85); border:1px solid var(--border);
+      backdrop-filter:blur(12px);
+    }
+    .badge-icon {
+      width:38px; height:38px; border-radius:50%; flex-shrink:0;
+      background:rgba(255,45,59,.12); border:1px solid rgba(255,45,59,.3);
+      display:flex; align-items:center; justify-content:center; font-size:1rem;
+    }
+    .badge-txt { font-size:.72rem; color:var(--muted); line-height:1.5; }
+    .badge-txt strong { color:var(--red); display:block; font-size:.88rem; }
+    /* scroll arrow */
+    .hero-arrow {
+      position:absolute; bottom:2.5rem; left:50%; transform:translateX(-50%);
+      z-index:10; display:flex; flex-direction:column; align-items:center; gap:.4rem;
+      cursor:pointer; opacity:0; animation:fadeIn .8s ease 3.5s both;
+    }
+    .hero-arrow span { font-size:.6rem; letter-spacing:.2em; color:var(--muted); }
+    .arrow-chevron {
+      width:20px; height:20px;
+      border-right:1.5px solid rgba(122,136,153,.6);
+      border-bottom:1.5px solid rgba(122,136,153,.6);
+      animation:bounce 1.6s ease infinite; margin-top:-4px;
+    }
+
+    /* ════ PROBLEM ════ */
+    #problem { height: 400vh; }  /* overridden by JS on mobile */
+    .prob-step { flex-shrink:0; }
+    .prob-icon { font-size:clamp(3rem,6vw,5rem); margin-bottom:1.5rem; display:block; }
+    .pdot {
+      width:8px; height:8px; border-radius:50%;
+      background:rgba(255,255,255,.2); transition:background .3s, transform .3s;
+    }
+    .pdot.active { background:var(--cyan); transform:scale(1.4); }
+
+    /* ════ CHART bars ════ */
+    .bar-col {
+      flex:1; display:flex; flex-direction:column;
+      align-items:center; justify-content:flex-end;
+      gap:.4rem; height:100%; position:relative;
+    }
+    .bar-val { font-size:.85rem; font-weight:700; color:var(--text); opacity:0; transition:opacity .4s ease 1.2s; }
+    .bar-col.lit .bar-val { opacity:1; }
+    .bar-stick {
+      width:100%; max-width:72px; height:0; border-radius:3px 3px 0 0;
+      transition: height 1.1s cubic-bezier(.25,.46,.45,.94);
+      position:relative;
+    }
+    .bar-stick.gray   { background:rgba(106,120,136,.32); }
+    .bar-stick.gold   { background:linear-gradient(to top,var(--gold),rgba(255,170,85,.5)); }
+    .bar-stick.red    {
+      background:linear-gradient(to top,var(--red),rgba(255,45,59,.55));
+      box-shadow:0 0 20px rgba(255,45,59,.3);
+    }
+    .bar-city {
+      font-size:.68rem; color:var(--muted); white-space:nowrap; text-align:center;
+      position:absolute; bottom:-2.3rem; left:50%; transform:translateX(-50%);
+    }
+    .bar-city.hl  { color:var(--red);  font-weight:700; }
+    .bar-city.gd  { color:var(--gold); font-weight:700; }
+    #chart-bars { border-bottom:1px solid rgba(255,255,255,.06); }
+
+    /* ════ SOLUTION flip cards ════ */
+    @media(min-width:768px){ #sol-grid { grid-template-columns:repeat(3,1fr) !important; } }
+    @media(min-width:768px){ #eff-grid { grid-template-columns:1fr 1.4fr !important; } }
+    @media(min-width:900px){ #pledge-grid { grid-template-columns:1fr 1.35fr !important; } }
+    @media(min-width:768px){ #footer-grid { grid-template-columns:1.3fr 1fr 1fr !important; } }
+    .flip-wrap {
+      perspective:1100px; height:280px; cursor:pointer;
+    }
+    .flip-inner {
+      width:100%; height:100%; position:relative;
+      transform-style:preserve-3d;
+      transition:transform .7s cubic-bezier(.4,0,.2,1);
+    }
+    .flip-wrap:hover .flip-inner { transform:rotateY(180deg); }
+    .flip-front, .flip-back {
+      position:absolute; inset:0; backface-visibility:hidden;
+      padding:2rem 1.75rem;
+      border:1px solid var(--border);
+      display:flex; flex-direction:column;
+    }
+    .flip-front { background:rgba(255,255,255,.025); }
+    .flip-back  {
+      background:var(--bg3);
+      border-color:rgba(0,212,255,.2);
+      transform:rotateY(180deg);
+      justify-content:center;
+    }
+    .sol-num  { font-family:var(--serif); font-size:3rem; font-weight:900; color:rgba(255,45,59,.18); line-height:1; margin-bottom:.5rem; }
+    .sol-title{ font-family:var(--serif); font-size:1.05rem; font-weight:700; color:var(--text); line-height:1.4; margin-bottom:.5rem; }
+    .sol-hint { font-size:.75rem; color:var(--muted); margin-top:auto; }
+    /* animated border on flip-front */
+    .flip-front::after {
+      content:''; position:absolute; inset:0; border-radius:0;
+      background:linear-gradient(90deg,var(--red),var(--cyan),var(--purple),var(--gold),var(--red));
+      background-size:300% 100%;
+      animation:borderFlow 4s linear infinite;
+      -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite:destination-out; mask-composite:exclude;
+      padding:1px; pointer-events:none; opacity:.5;
+    }
+
+    /* ════ SVG RING ════ */
+    .svg-ring { position:relative; flex-shrink:0; }
+    .ring-label {
+      position:absolute; inset:0; display:flex; align-items:center;
+      justify-content:center; font-family:var(--serif);
+      font-size:1.1rem; font-weight:900; color:var(--gold);
+    }
+
+    /* ════ STATS CARDS ════ */
+    @media(min-width:768px){ #stats-grid{ grid-template-columns:repeat(3,1fr) !important; } }
+    .tilt-card { transform-style:preserve-3d; will-change:transform; }
+    /* holographic sheen overlay */
+    .card-sheen {
+      position:absolute; inset:0; pointer-events:none; z-index:1;
+      background:radial-gradient(circle at var(--sx,50%) var(--sy,50%),
+        rgba(0,212,255,.07) 0%, rgba(123,47,255,.05) 40%, transparent 65%);
+      opacity:0; transition:opacity .3s;
+    }
+    .tilt-card:hover .card-sheen { opacity:1; }
+
+    /* placeholder sections */
+    footer { padding:4rem 0 2rem; background:#020509; }
+    .ph { color:var(--muted); opacity:.25; text-align:center; font-size:1.5rem; padding:4rem 0; }
   </style>
 </head>
 <body>
 
-  <!-- sections inserted in next steps -->
-  <div id="preloader" style="position:fixed;inset:0;background:#03060d;display:flex;align-items:center;justify-content:center;z-index:9999;font-family:'Noto Sans KR',sans-serif;">
-    <span style="font-size:clamp(3rem,8vw,6rem);font-weight:700;color:#ff2d3b;letter-spacing:.05em" id="loader-num">0</span>
+  <!-- ═══ PRELOADER ═══ -->
+  <div id="preloader">
+    <div class="pl-logo">순천갑 김문수</div>
+    <div class="pl-num" id="pl-num">0</div>
+    <div class="pl-bar"><div class="pl-bar-fill" id="pl-fill"></div></div>
   </div>
 
-  <nav id="nav" style="position:fixed;top:0;left:0;right:0;z-index:200;height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;transition:background .4s,backdrop-filter .4s">
-    <span style="font-family:'Noto Serif KR',serif;font-weight:700;font-size:1.05rem">순천갑 김문수</span>
-    <span style="font-size:.75rem;color:#7a8899">더불어민주당</span>
+  <!-- ═══ CUSTOM CURSOR ═══ -->
+  <div class="c-dot" id="c-dot"></div>
+  <div class="c-ring" id="c-ring"></div>
+
+  <!-- ═══ NAV ═══ -->
+  <nav id="nav">
+    <div class="nav-left">
+      <img src="images/logo.png" alt="민주당" class="nav-logo-img"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex'">
+      <span class="nav-logo-fb" style="display:none">민주</span>
+      <div class="nav-sep"></div>
+      <span class="nav-name">순천갑 김문수</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:2rem">
+      <ul class="nav-links">
+        <li><a href="#stats">현실</a></li>
+        <li><a href="#chart">데이터</a></li>
+        <li><a href="#solution">해결책</a></li>
+        <li><a href="#pledge">공약</a></li>
+      </ul>
+      <a href="#pledge" class="nav-cta magnetic">공약 보기</a>
+    </div>
   </nav>
 
-  <section id="hero" style="min-height:100vh;background:#03060d"></section>
-  <section id="stats"   style="background:#070d1a"><p style="color:#7a8899;text-align:center">STATS — 다음</p></section>
-  <section id="problem" style="background:#03060d"><p style="color:#7a8899;text-align:center">PROBLEM — 다음</p></section>
-  <section id="chart"   style="background:#070d1a"><p style="color:#7a8899;text-align:center">CHART — 다음</p></section>
-  <section id="solution"style="background:#0a1525"><p style="color:#7a8899;text-align:center">SOLUTION — 다음</p></section>
-  <section id="effects" style="background:#03060d"><p style="color:#7a8899;text-align:center">EFFECTS — 다음</p></section>
-  <section id="pledge"  style="background:#070d1a"><p style="color:#7a8899;text-align:center">PLEDGE — 다음</p></section>
-  <footer               style="background:#020509"><p style="color:#7a8899;text-align:center">FOOTER — 다음</p></footer>
+  <!-- ═══ HERO ═══ -->
+  <section id="hero">
+    <canvas id="hero-canvas"></canvas>
+    <div class="hero-vignette"></div>
+    <div class="hero-scan"></div>
+
+    <div class="hero-inner">
+      <!-- Left: text -->
+      <div class="hero-text">
+        <div class="hero-kicker">
+          <span class="kicker-dot"></span>
+          긴급 보고 — 전남 의료 붕괴
+        </div>
+        <h1 class="hero-headline">
+          <span id="glitch-target"></span><span class="cursor"></span>
+        </h1>
+        <div class="hero-divider" id="hero-div"></div>
+        <p class="hero-sub" id="hero-sub-text">
+          <strong>55만 전남동부권 주민</strong>의 생명이<br>지금 이 순간에도 위협받고 있습니다.
+        </p>
+        <div class="hero-pills">
+          <div class="hero-pill">
+            <strong>0개</strong><span>전남 의과대학 수</span>
+          </div>
+          <div class="hero-pill">
+            <strong style="color:var(--gold)">+35%</strong><span>중증 사망률 초과</span>
+          </div>
+          <div class="hero-pill">
+            <strong style="color:var(--cyan)">꼴찌</strong><span>3차병원 병상 전국</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: image -->
+      <div class="hero-img-side">
+        <div class="hero-frame">
+          <img src="images/kim_serious.png" alt="김문수 의원"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="hero-frame-ph" style="display:none">
+            <span class="ph-icon">👤</span><span>김문수 의원</span>
+          </div>
+          <div class="hero-badge">
+            <div class="badge-icon">🏥</div>
+            <div class="badge-txt">
+              <strong>전국 유일</strong>의대 없는 광역자치단체
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-arrow" onclick="document.getElementById('stats').scrollIntoView({behavior:'smooth'})">
+      <span>SCROLL</span>
+      <div class="arrow-chevron"></div>
+    </div>
+  </section>
+
+  <!-- ═══ STATS ═══ -->
+  <section id="stats" style="background:var(--bg2);padding:7rem 0;position:relative;overflow:hidden">
+    <!-- ambient glow -->
+    <div style="position:absolute;top:-200px;left:-200px;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(255,45,59,.06),transparent 70%);pointer-events:none"></div>
+
+    <div class="inner">
+      <div class="reveal-up" style="margin-bottom:4rem">
+        <div class="chip">충격적 현실</div>
+        <h2 class="s-title">전남 의료 붕괴의 민낯</h2>
+        <p class="s-desc">전국 유일하게 의과대학이 없는 광역자치단체. 전라남도의 현실입니다.</p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr;gap:1.5rem" id="stats-grid">
+        <!-- Card 1 -->
+        <div class="tilt-card" style="padding:2.5rem 2rem;border:1px solid var(--border);background:rgba(255,255,255,.02);position:relative;overflow:hidden;border-bottom:2px solid var(--red);transition:transform .15s ease,box-shadow .15s ease">
+          <div class="card-sheen"></div>
+          <div style="font-size:1.5rem;margin-bottom:1rem">📈</div>
+          <div class="stat-num" data-count="35" data-prefix="+" data-suffix="%" style="font-family:var(--serif);font-size:clamp(3.5rem,7vw,5.5rem);font-weight:900;color:var(--red);line-height:1;margin-bottom:.5rem">+0%</div>
+          <div style="font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:.6rem">전국 평균 대비 중증환자 사망률</div>
+          <p style="font-size:.82rem;color:var(--muted);line-height:1.65">제때 치료받지 못한 결과. 전국 평균보다 35% 높은 중증환자 사망률이 그 증거입니다.</p>
+        </div>
+        <!-- Card 2 -->
+        <div class="tilt-card" style="padding:2.5rem 2rem;border:1px solid var(--border);background:rgba(255,255,255,.02);position:relative;overflow:hidden;border-bottom:2px solid rgba(255,255,255,.3);transition:transform .15s ease,box-shadow .15s ease">
+          <div class="card-sheen"></div>
+          <div style="font-size:1.5rem;margin-bottom:1rem">🏫</div>
+          <div style="font-family:var(--serif);font-size:clamp(3.5rem,7vw,5.5rem);font-weight:900;color:var(--text);line-height:1;margin-bottom:.5rem">0개</div>
+          <div style="font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:.6rem">전남 지역 의과대학 수</div>
+          <p style="font-size:.82rem;color:var(--muted);line-height:1.65">전국 17개 광역자치단체 중 전남만이 단 하나의 의과대학도 없습니다.</p>
+        </div>
+        <!-- Card 3 -->
+        <div class="tilt-card" style="padding:2.5rem 2rem;border:1px solid var(--border);background:rgba(255,255,255,.02);position:relative;overflow:hidden;border-bottom:2px solid var(--gold);transition:transform .15s ease,box-shadow .15s ease">
+          <div class="card-sheen"></div>
+          <div style="font-size:1.5rem;margin-bottom:1rem">🏥</div>
+          <div class="stat-num" data-text="꼴찌" style="font-family:var(--serif);font-size:clamp(3.5rem,7vw,5.5rem);font-weight:900;color:var(--gold);line-height:1;margin-bottom:.5rem">—</div>
+          <div style="font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:.6rem">전국 3차병원 병상 수 순위</div>
+          <p style="font-size:.82rem;color:var(--muted);line-height:1.65">인구 천명당 0.6개 — 전국 최하위. 서울(2.1개)의 28% 수준에 불과합니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ═══ PROBLEM — horizontal scroll ═══ -->
+  <section id="problem" style="background:var(--bg);position:relative">
+    <!-- sticky wrapper fills height = 4 * 100vh -->
+    <div id="prob-sticky" style="position:sticky;top:0;height:100vh;overflow:hidden;display:flex;align-items:center">
+      <!-- progress dots -->
+      <div id="prob-dots" style="position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);display:flex;gap:.7rem;z-index:10">
+        <span class="pdot active"></span><span class="pdot"></span><span class="pdot"></span><span class="pdot"></span>
+      </div>
+      <!-- horizontal track -->
+      <div id="prob-track" style="display:flex;width:400vw;transition:transform .05s linear;will-change:transform">
+        <!-- step 1 -->
+        <div class="prob-step" style="width:100vw;padding:0 2.5rem;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+          <div class="prob-icon">🏫</div>
+          <div class="chip" style="justify-content:center">STEP 01</div>
+          <h3 style="font-family:var(--serif);font-size:clamp(2rem,4vw,3.2rem);font-weight:900;margin-bottom:1rem">의과대학 전무</h3>
+          <p style="color:var(--muted);max-width:500px;line-height:1.8">전남 전체에 의과대학이 단 하나도 없어 지역 의사 양성 기반 자체가 없습니다. 의사를 키우는 토양이 없으면, 의사도 없습니다.</p>
+        </div>
+        <!-- step 2 -->
+        <div class="prob-step" style="width:100vw;padding:0 2.5rem;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+          <div class="prob-icon">👨‍⚕️</div>
+          <div class="chip" style="justify-content:center">STEP 02</div>
+          <h3 style="font-family:var(--serif);font-size:clamp(2rem,4vw,3.2rem);font-weight:900;margin-bottom:1rem">전문의 만성 부족</h3>
+          <p style="color:var(--muted);max-width:500px;line-height:1.8">의대가 없으니 전문의가 수도권으로 이탈합니다. 지역에서 배우고 지역에서 일하는 의사가 없습니다.</p>
+        </div>
+        <!-- step 3 -->
+        <div class="prob-step" style="width:100vw;padding:0 2.5rem;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+          <div class="prob-icon">🚑</div>
+          <div class="chip" style="justify-content:center">STEP 03</div>
+          <h3 style="font-family:var(--serif);font-size:clamp(2rem,4vw,3.2rem);font-weight:900;margin-bottom:1rem">중증 치료 공백</h3>
+          <p style="color:var(--muted);max-width:500px;line-height:1.8">3차병원이 없으니 중증 환자는 광주·서울까지 수백 킬로미터를 이동해야 합니다. 그 사이 골든타임이 사라집니다.</p>
+        </div>
+        <!-- step 4 — 위기 강조 -->
+        <div class="prob-step" style="width:100vw;padding:0 2.5rem;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:rgba(255,45,59,.04)">
+          <div class="prob-icon" style="color:var(--red)">⚠️</div>
+          <div class="chip" style="justify-content:center;color:var(--red)">RESULT</div>
+          <h3 style="font-family:var(--serif);font-size:clamp(2rem,4vw,3.2rem);font-weight:900;margin-bottom:1rem;color:var(--red)">사망률 +35%</h3>
+          <p style="color:var(--muted);max-width:500px;line-height:1.8">골든타임을 놓친 결과입니다. 전남 중증환자 사망률은 전국 평균보다 35% 높습니다. 이것은 통계가 아니라 실제 생명입니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ CHART ═══ -->
+  <section id="chart" style="background:var(--bg2);padding:7rem 0;position:relative;overflow:hidden">
+    <div style="position:absolute;bottom:-150px;right:-150px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(0,212,255,.05),transparent 70%);pointer-events:none"></div>
+    <div class="inner">
+      <div class="reveal-up" style="margin-bottom:3.5rem">
+        <div class="chip">데이터 분석</div>
+        <h2 class="s-title">인구 1천명당 3차병원 병상 수<br><span style="color:var(--red)">— 전국 최하위</span></h2>
+        <p class="s-desc">광주·전남은 서울의 4분의 1 수준. 숫자가 곧 생명입니다.</p>
+      </div>
+      <!-- chart wrapper -->
+      <div style="position:relative">
+        <canvas id="burst-canvas" style="position:absolute;inset:0;pointer-events:none;z-index:2"></canvas>
+        <div id="chart-bars" style="display:flex;align-items:flex-end;gap:clamp(.5rem,2vw,1.5rem);height:280px;padding-bottom:3rem;position:relative;z-index:1">
+          <!-- grid lines via CSS -->
+        </div>
+      </div>
+      <p style="font-size:.72rem;color:var(--muted);opacity:.5;margin-top:2rem">* 보건복지부 의료기관 현황 통계 | 단위: 병상/인구 1천명 | 2023년 기준</p>
+    </div>
+  </section>
+
+  <!-- ═══ SOLUTION — flip cards ═══ -->
+  <section id="solution" style="background:var(--bg3);padding:7rem 0">
+    <div class="inner">
+      <div class="reveal-up" style="margin-bottom:4rem">
+        <div class="chip">정책 제안</div>
+        <h2 class="s-title">해법은 하나입니다<br><span style="color:var(--gold)">— 전남 국립의대 설립</span></h2>
+        <p class="s-desc">구조적 문제에는 구조적 해법이 필요합니다. 카드를 뒤집어 보세요.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr;gap:1.5rem" id="sol-grid">
+        <!-- flip card 1 -->
+        <div class="flip-wrap reveal-up">
+          <div class="flip-inner">
+            <div class="flip-front">
+              <div class="sol-num">01</div>
+              <span style="font-size:2.5rem;display:block;margin-bottom:1rem">🏛️</span>
+              <h3 class="sol-title">1대학 2부속병원 체제</h3>
+              <p class="sol-hint">카드를 hover 하세요 →</p>
+            </div>
+            <div class="flip-back">
+              <div class="sol-num" style="color:var(--gold)">01</div>
+              <h3 class="sol-title" style="color:var(--gold)">동부 순천 + 서부 목포</h3>
+              <p style="font-size:.85rem;color:var(--muted);line-height:1.75">국립의과대학 하나에 두 개의 부속병원. 전남 전역에 균형 잡힌 의료 교육과 서비스를 동시에 제공합니다.</p>
+            </div>
+          </div>
+        </div>
+        <!-- flip card 2 -->
+        <div class="flip-wrap reveal-up" style="transition-delay:.15s">
+          <div class="flip-inner">
+            <div class="flip-front">
+              <div class="sol-num">02</div>
+              <span style="font-size:2.5rem;display:block;margin-bottom:1rem">⚕️</span>
+              <h3 class="sol-title">성가롤로병원 3차 기능 강화</h3>
+              <p class="sol-hint">카드를 hover 하세요 →</p>
+            </div>
+            <div class="flip-back">
+              <div class="sol-num" style="color:var(--cyan)">02</div>
+              <h3 class="sol-title" style="color:var(--cyan)">권역 거점병원 육성</h3>
+              <p style="font-size:.85rem;color:var(--muted);line-height:1.75">순천 성가롤로병원을 권역 3차병원으로 육성합니다. 동부권 주민이 지역 내에서 중증 질환을 치료받을 수 있게 합니다.</p>
+            </div>
+          </div>
+        </div>
+        <!-- flip card 3 -->
+        <div class="flip-wrap reveal-up" style="transition-delay:.3s">
+          <div class="flip-inner">
+            <div class="flip-front">
+              <div class="sol-num">03</div>
+              <span style="font-size:2.5rem;display:block;margin-bottom:1rem">🔨</span>
+              <h3 class="sol-title">순천의료원 신축 이전</h3>
+              <p class="sol-hint">카드를 hover 하세요 →</p>
+            </div>
+            <div class="flip-back">
+              <div class="sol-num" style="color:var(--red)">03</div>
+              <h3 class="sol-title" style="color:var(--red)">의대 부속병원 전환</h3>
+              <p style="font-size:.85rem;color:var(--muted);line-height:1.75">노후화된 순천의료원을 신축 이전하고 국립의대 부속병원으로 전환합니다. 공공의료와 의학교육을 동시에 강화합니다.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ EFFECTS ═══ -->
+  <section id="effects" style="background:var(--bg);padding:7rem 0">
+    <div class="inner">
+      <div class="reveal-up" style="margin-bottom:4rem">
+        <div class="chip">기대 효과</div>
+        <h2 class="s-title">국립의대 설립으로<br>달라지는 전남</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr;gap:4rem;align-items:center" id="eff-grid">
+        <!-- big counter -->
+        <div class="reveal-left" style="padding:3rem 2rem;background:rgba(255,45,59,.04);border:1px solid rgba(255,45,59,.15);text-align:center;position:relative;overflow:hidden">
+          <div style="position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(255,45,59,.06),transparent 65%);pointer-events:none"></div>
+          <div style="font-size:.72rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--red);margin-bottom:.5rem;position:relative">연간 사망자 감소 예상</div>
+          <div style="font-family:var(--serif);font-size:clamp(4rem,10vw,7rem);font-weight:900;color:var(--red);line-height:1;position:relative;display:flex;align-items:baseline;justify-content:center;gap:.06em">
+            <span id="deaths-cnt">0</span><span style="font-size:clamp(1.5rem,3vw,2.5rem);color:var(--muted)">명</span>
+          </div>
+          <p style="font-size:.9rem;color:var(--muted);margin-top:.75rem;position:relative">적절한 치료를 받지 못해<br>생을 마감하는 전남 주민</p>
+        </div>
+        <!-- rings -->
+        <div class="reveal-right" style="display:flex;flex-direction:column;gap:2.5rem">
+          <!-- ring 1 -->
+          <div style="display:flex;align-items:center;gap:1.5rem">
+            <div class="svg-ring" data-pct="80" data-from="57.6">
+              <svg width="100" height="100" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="8"/>
+                <circle class="ring-track" cx="50" cy="50" r="42" fill="none" stroke="rgba(255,170,85,.3)" stroke-width="8" stroke-dasharray="263.9" stroke-dashoffset="0" transform="rotate(-90 50 50)"/>
+                <circle class="ring-fill" cx="50" cy="50" r="42" fill="none" stroke="var(--gold)" stroke-width="8" stroke-linecap="round" stroke-dasharray="263.9" stroke-dashoffset="263.9" transform="rotate(-90 50 50)" style="transition:stroke-dashoffset 2s cubic-bezier(.25,.46,.45,.94)"/>
+              </svg>
+              <div class="ring-label">80%</div>
+            </div>
+            <div>
+              <div style="font-size:.95rem;font-weight:700;margin-bottom:.3rem">중증환자 자체충족률</div>
+              <div style="font-size:.82rem;color:var(--muted)">현재 <span style="color:var(--text)">57.6%</span> → 목표 <span style="color:var(--gold);font-weight:700">80%</span></div>
+            </div>
+          </div>
+          <!-- ring 2 -->
+          <div style="display:flex;align-items:center;gap:1.5rem">
+            <div class="svg-ring" data-pct="90" data-from="69.2">
+              <svg width="100" height="100" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="8"/>
+                <circle class="ring-track" cx="50" cy="50" r="42" fill="none" stroke="rgba(0,212,255,.2)" stroke-width="8" stroke-dasharray="263.9" stroke-dashoffset="0" transform="rotate(-90 50 50)"/>
+                <circle class="ring-fill" cx="50" cy="50" r="42" fill="none" stroke="var(--cyan)" stroke-width="8" stroke-linecap="round" stroke-dasharray="263.9" stroke-dashoffset="263.9" transform="rotate(-90 50 50)" style="transition:stroke-dashoffset 2s cubic-bezier(.25,.46,.45,.94) .3s"/>
+              </svg>
+              <div class="ring-label" style="color:var(--cyan)">90%</div>
+            </div>
+            <div>
+              <div style="font-size:.95rem;font-weight:700;margin-bottom:.3rem">중등증환자 자체충족률</div>
+              <div style="font-size:.82rem;color:var(--muted)">현재 <span style="color:var(--text)">69.2%</span> → 목표 <span style="color:var(--cyan);font-weight:700">90%</span></div>
+            </div>
+          </div>
+          <!-- note -->
+          <div style="padding:1.25rem;background:rgba(255,170,85,.05);border:1px solid rgba(255,170,85,.15);border-left:3px solid var(--gold);font-size:.875rem;color:var(--muted);line-height:1.75">
+            국립의대 설립은 단순한 교육 기관 신설이 아닙니다.<br>
+            <strong style="color:var(--gold)">55만 전남동부권 주민의 생존권</strong>을 지키는 일입니다.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ PLEDGE ═══ -->
+  <section id="pledge" style="background:var(--bg2);padding:7rem 0;position:relative;overflow:hidden">
+    <div style="position:absolute;inset:0;pointer-events:none">
+      <canvas id="pledge-canvas" style="width:100%;height:100%;opacity:.4"></canvas>
+    </div>
+    <div class="inner" style="position:relative;z-index:1">
+      <div style="display:grid;grid-template-columns:1fr;gap:3.5rem;align-items:center" id="pledge-grid">
+        <!-- image -->
+        <div class="reveal-left">
+          <div style="position:relative">
+            <div style="position:absolute;inset:-2px;background:linear-gradient(135deg,rgba(255,45,59,.35),rgba(0,212,255,.2));z-index:0"></div>
+            <img src="images/kim_active.png" alt="김문수 의원"
+                 style="position:relative;z-index:1;width:100%;max-height:500px;object-fit:cover;object-position:top;filter:brightness(.88)"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div style="display:none;position:relative;z-index:1;width:100%;height:400px;background:linear-gradient(160deg,#112244,#03060d);align-items:center;justify-content:center;flex-direction:column;gap:1rem;color:var(--muted)">
+              <span style="font-size:3rem;opacity:.2">✊</span><span>김문수 의원</span>
+            </div>
+          </div>
+        </div>
+        <!-- text -->
+        <div class="reveal-right" style="display:flex;flex-direction:column;gap:2rem">
+          <div class="chip">의원 공약</div>
+          <blockquote style="font-family:var(--serif);font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;line-height:1.45;padding-left:1.4rem;border-left:3px solid var(--red);color:var(--text)">
+            "전남 국립의대 설립을<br><strong style="color:var(--red)">반드시 실현</strong>하겠습니다"
+          </blockquote>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:1rem">
+            <li style="display:flex;align-items:flex-start;gap:.9rem;font-size:.92rem;line-height:1.65">
+              <span style="color:var(--gold);flex-shrink:0;margin-top:.1em">✦</span>
+              국회 입성 즉시 「전남 국립의과대학 설립 특별법」 발의 및 입법 추진
+            </li>
+            <li style="display:flex;align-items:flex-start;gap:.9rem;font-size:.92rem;line-height:1.65">
+              <span style="color:var(--gold);flex-shrink:0;margin-top:.1em">✦</span>
+              정부·교육부·복지부 협력을 통한 예산 확보 및 부지 선정 신속 추진
+            </li>
+            <li style="display:flex;align-items:flex-start;gap:.9rem;font-size:.92rem;line-height:1.65">
+              <span style="color:var(--gold);flex-shrink:0;margin-top:.1em">✦</span>
+              동부권 순천·서부권 목포 2개 부속병원 체제로 전남 전역 의료 균형 실현
+            </li>
+          </ul>
+          <div style="display:flex;align-items:center;gap:1rem;padding-top:1.2rem;border-top:1px solid var(--border)">
+            <img src="images/logo.png" alt="민주당" style="height:36px"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex'">
+            <span style="display:none;width:36px;height:36px;background:var(--red);border-radius:6px;align-items:center;justify-content:center;font-size:.6rem;font-weight:900;color:#fff">민주</span>
+            <div>
+              <div style="font-family:var(--serif);font-weight:700;font-size:1.05rem">김 문 수</div>
+              <div style="font-size:.78rem;color:var(--muted)">더불어민주당 순천갑 국회의원</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer>
+    <div class="inner">
+      <div style="display:grid;grid-template-columns:1fr;gap:2.5rem;padding-bottom:2rem" id="footer-grid">
+        <div>
+          <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem">
+            <img src="images/logo.png" alt="민주당" style="height:30px" onerror="this.style.display='none'">
+            <span style="font-family:var(--serif);font-size:1.05rem;font-weight:700">김문수</span>
+          </div>
+          <p style="font-size:.8rem;color:var(--muted);line-height:1.7">더불어민주당 순천갑 국회의원<br>전남 국립의대 설립 추진위원</p>
+        </div>
+        <div>
+          <h4 style="font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.9rem">주요 공약</h4>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:.5rem">
+            <li><a href="#solution" style="font-size:.82rem;color:var(--muted);transition:color .2s" onmouseover="this.style.color='#e8edf5'" onmouseout="this.style.color='#6a7888'">전남 국립의대 설립</a></li>
+            <li><a href="#solution" style="font-size:.82rem;color:var(--muted);transition:color .2s" onmouseover="this.style.color='#e8edf5'" onmouseout="this.style.color='#6a7888'">성가롤로병원 3차병원 기능 강화</a></li>
+            <li><a href="#solution" style="font-size:.82rem;color:var(--muted);transition:color .2s" onmouseover="this.style.color='#e8edf5'" onmouseout="this.style.color='#6a7888'">순천의료원 신축 이전</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 style="font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.9rem">연락처</h4>
+          <p style="font-size:.82rem;color:var(--muted);line-height:1.75">순천갑 선거사무소<br>전라남도 순천시<br>📞 (061) 000-0000</p>
+        </div>
+      </div>
+      <div style="padding-top:1.5rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;flex-wrap:wrap;gap:.75rem;font-size:.72rem;color:rgba(106,120,136,.5)">
+        <span>© 2024 더불어민주당 순천갑 김문수 선거사무소.</span>
+        <span>전남 국립의대 설립 캠페인</span>
+      </div>
+    </div>
+  </footer>
 
   <script>
-    // ── PRELOADER (Step 1 preview) ──
-    (function() {
-      const el = document.getElementById('loader-num');
-      let n = 0;
-      const iv = setInterval(() => {
-        n += Math.random() * 12 + 1;
-        if (n >= 100) {
-          n = 100;
-          clearInterval(iv);
-          setTimeout(() => {
-            const pl = document.getElementById('preloader');
-            pl.style.transition = 'clip-path .9s cubic-bezier(.76,0,.24,1)';
-            pl.style.clipPath = 'inset(0 0 100% 0)';
-            setTimeout(() => pl.remove(), 950);
-          }, 300);
-        }
-        el.textContent = Math.floor(n);
-      }, 28);
+  'use strict';
+  const IS_MOBILE = window.innerWidth < 768 || navigator.maxTouchPoints > 0;
+
+  /* ══════════════════════════════════
+     PRELOADER
+  ══════════════════════════════════ */
+  (function initPreloader() {
+    const numEl  = document.getElementById('pl-num');
+    const fillEl = document.getElementById('pl-fill');
+    let n = 0;
+    const iv = setInterval(() => {
+      n += Math.random() * 11 + 1;
+      if (n >= 100) { n = 100; clearInterval(iv); }
+      numEl.textContent  = Math.floor(n);
+      fillEl.style.width = n + '%';
+      if (n === 100) {
+        setTimeout(() => {
+          const pl = document.getElementById('preloader');
+          pl.style.clipPath = 'inset(0 0 100% 0)';
+          setTimeout(() => pl.remove(), 950);
+        }, 350);
+      }
+    }, 26);
+  })();
+
+  /* ══════════════════════════════════
+     CUSTOM CURSOR
+  ══════════════════════════════════ */
+  (function initCursor() {
+    if (IS_MOBILE) return;
+    document.body.style.cursor = 'none';
+    const dot  = document.getElementById('c-dot');
+    const ring = document.getElementById('c-ring');
+    let mx = window.innerWidth/2, my = window.innerHeight/2;
+    let rx = mx, ry = my;
+
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      dot.style.left = mx + 'px';
+      dot.style.top  = my + 'px';
+    });
+
+    (function lerp() {
+      rx += (mx - rx) * 0.1;
+      ry += (my - ry) * 0.1;
+      ring.style.left = rx + 'px';
+      ring.style.top  = ry + 'px';
+      requestAnimationFrame(lerp);
     })();
+
+    document.querySelectorAll('a, button, .nav-cta, .hero-pill').forEach(el => {
+      el.addEventListener('mouseenter', () => ring.classList.add('hover'));
+      el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
+    });
+  })();
+
+  /* ══════════════════════════════════
+     STICKY NAV
+  ══════════════════════════════════ */
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('solid', scrollY > 60);
+  }, { passive: true });
+
+  /* ══════════════════════════════════
+     MAGNETIC BUTTONS
+  ══════════════════════════════════ */
+  (function initMagnetic() {
+    if (IS_MOBILE) return;
+    document.querySelectorAll('.magnetic').forEach(btn => {
+      btn.addEventListener('mousemove', e => {
+        const r = btn.getBoundingClientRect();
+        const x = (e.clientX - r.left - r.width  / 2) * 0.35;
+        const y = (e.clientY - r.top  - r.height / 2) * 0.35;
+        btn.style.transform = `translate(${x}px,${y}px)`;
+      });
+      btn.addEventListener('mouseleave', () => btn.style.transform = '');
+    });
+  })();
+
+  /* ══════════════════════════════════
+     THREE.JS HERO PARTICLES
+  ══════════════════════════════════ */
+  (function initThree() {
+    if (typeof THREE === 'undefined') return;
+    const canvas = document.getElementById('hero-canvas');
+    const W = canvas.offsetWidth, H = canvas.offsetHeight;
+
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false });
+    renderer.setSize(W, H);
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+
+    const scene  = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(65, W / H, 0.1, 2000);
+    camera.position.z = 380;
+
+    // ── Particles ──
+    const N = IS_MOBILE ? 600 : 3000;
+    const pos  = new Float32Array(N * 3);
+    const col  = new Float32Array(N * 3);
+    const orig = new Float32Array(N * 3);
+    const vel  = new Float32Array(N);     // per-particle speed offset
+
+    const C1 = new THREE.Color('#ff2d3b');
+    const C2 = new THREE.Color('#00d4ff');
+    const C3 = new THREE.Color('#ffffff');
+
+    for (let i = 0; i < N; i++) {
+      const x = (Math.random() - .5) * 900;
+      const y = (Math.random() - .5) * 600;
+      const z = (Math.random() - .5) * 450;
+      pos[i*3]=orig[i*3]=x; pos[i*3+1]=orig[i*3+1]=y; pos[i*3+2]=orig[i*3+2]=z;
+      vel[i] = Math.random() * Math.PI * 2;
+      const r = Math.random();
+      const c = r < .4 ? C1 : r < .7 ? C2 : C3;
+      col[i*3]=c.r; col[i*3+1]=c.g; col[i*3+2]=c.b;
+    }
+
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(pos,  3));
+    geo.setAttribute('color',    new THREE.BufferAttribute(col,  3));
+
+    const mat = new THREE.PointsMaterial({
+      size: IS_MOBILE ? 1.5 : 2,
+      vertexColors: true, transparent: true, opacity: .75,
+      sizeAttenuation: true,
+    });
+    const pts = new THREE.Points(geo, mat);
+    scene.add(pts);
+
+    let mx = 0, my = 0;
+    window.addEventListener('mousemove', e => {
+      mx = (e.clientX / innerWidth  - .5);
+      my = (e.clientY / innerHeight - .5);
+    }, { passive: true });
+
+    let t = 0;
+    (function animate() {
+      requestAnimationFrame(animate);
+      t += .008;
+
+      const pa = geo.attributes.position;
+      for (let i = 0; i < N; i++) {
+        const ox = orig[i*3], oy = orig[i*3+1], oz = orig[i*3+2];
+        const v  = vel[i];
+        pa.setXYZ(i,
+          ox + Math.sin(t + v) * 8,
+          oy + Math.cos(t * .7 + v) * 6,
+          oz + Math.sin(t * .5 + ox * .008) * 14 + Math.cos(t + oy * .008) * 10
+        );
+      }
+      pa.needsUpdate = true;
+
+      // camera drifts toward mouse
+      camera.position.x += (mx * 60 - camera.position.x) * .018;
+      camera.position.y += (-my * 40 - camera.position.y) * .018;
+      camera.lookAt(scene.position);
+      pts.rotation.y = t * .025;
+
+      renderer.render(scene, camera);
+    })();
+
+    window.addEventListener('resize', () => {
+      const w = canvas.offsetWidth, h = canvas.offsetHeight;
+      renderer.setSize(w, h);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    });
+  })();
+
+  /* ══════════════════════════════════
+     GLITCH HEADLINE
+  ══════════════════════════════════ */
+  (function initGlitch() {
+    const el   = document.getElementById('glitch-target');
+    const div  = document.getElementById('hero-div');
+    const TEXT = '전남에는 의대가 없다';
+    const CHARS= '!<>-_\\/[]{}—=+*^?#가나다라마바사아자';
+    let iter = 0;
+    let started = false;
+
+    function start() {
+      if (started) return; started = true;
+      const iv = setInterval(() => {
+        el.textContent = TEXT.split('').map((c, i) => {
+          if (i < iter) return c;
+          if (c === ' ') return ' ';
+          return CHARS[Math.floor(Math.random() * CHARS.length)];
+        }).join('');
+        iter += .45;
+        if (iter > TEXT.length) {
+          clearInterval(iv);
+          el.textContent = TEXT;
+          // reveal divider
+          setTimeout(() => { div.classList.add('go'); div.style.width = '60px'; }, 100);
+        }
+      }, 38);
+    }
+    // start after preloader-ish delay
+    setTimeout(start, 1200);
+  })();
+
+  /* ══════════════════════════════════
+     PROBLEM — HORIZONTAL SCROLL HIJACK
+  ══════════════════════════════════ */
+  (function initHScroll() {
+    const sec    = document.getElementById('problem');
+    const track  = document.getElementById('prob-track');
+    const dots   = document.querySelectorAll('.pdot');
+    const STEPS  = 4;
+    if (IS_MOBILE) {
+      // mobile: stack vertically, no hijack
+      sec.style.height = 'auto';
+      const sticky = document.getElementById('prob-sticky');
+      sticky.style.position = 'relative';
+      sticky.style.height = 'auto';
+      sticky.style.display = 'block';
+      track.style.display = 'flex';
+      track.style.flexDirection = 'column';
+      track.style.width = '100%';
+      document.querySelectorAll('.prob-step').forEach(s => {
+        s.style.width = '100%';
+        s.style.paddingTop = '4rem';
+        s.style.paddingBottom = '4rem';
+      });
+      return;
+    }
+    sec.style.height = (STEPS * 100) + 'vh';
+    window.addEventListener('scroll', () => {
+      const r = sec.getBoundingClientRect();
+      if (r.top > 0 || r.bottom < innerHeight) return;
+      const prog = Math.min(Math.abs(r.top) / (sec.offsetHeight - innerHeight), 1);
+      const raw  = prog * STEPS;
+      const xPct = Math.min(raw * 100, (STEPS - 1) * 100);
+      track.style.transform = `translateX(-${xPct}vw)`;
+      const idx = Math.min(Math.floor(raw), STEPS - 1);
+      dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+    }, { passive: true });
+  })();
+
+  /* ══════════════════════════════════
+     NEON BAR CHART + CANVAS BURST
+  ══════════════════════════════════ */
+  (function initChart() {
+    const DATA = [
+      { label:'서울',    val:2.1, cls:'gray' },
+      { label:'부산',    val:1.8, cls:'gray' },
+      { label:'대구',    val:1.7, cls:'gray' },
+      { label:'인천',    val:1.4, cls:'gray' },
+      { label:'전국평균',val:1.3, cls:'gold', labelCls:'gd' },
+      { label:'광주·전남',val:.6, cls:'red',  labelCls:'hl' },
+    ];
+    const MAX_H = 220; // px
+    const MAX_V = 2.1;
+    const wrap = document.getElementById('chart-bars');
+    wrap.style.display = 'flex';
+    wrap.style.alignItems = 'flex-end';
+    wrap.style.gap = 'clamp(.5rem,2vw,1.5rem)';
+
+    DATA.forEach(d => {
+      const col = document.createElement('div');
+      col.className = 'bar-col';
+      col.innerHTML = `
+        <div class="bar-val">${d.val}</div>
+        <div class="bar-stick ${d.cls}" style="position:relative">
+          <span class="bar-city ${d.labelCls||''}">${d.label}</span>
+        </div>`;
+      wrap.appendChild(col);
+    });
+
+    // canvas burst
+    const canvas = document.getElementById('burst-canvas');
+    canvas.width  = wrap.offsetWidth  || 600;
+    canvas.height = wrap.offsetHeight || 280;
+    const ctx = canvas.getContext('2d');
+    function burst(x, y, color) {
+      const ps = Array.from({length:18}, () => ({
+        x, y,
+        vx:(Math.random()-.5)*7,
+        vy:(Math.random()*-9)-2,
+        life:1, r:Math.random()*3+1.5
+      }));
+      (function draw() {
+        if (!ps.some(p=>p.life>0)) return;
+        ps.forEach(p => {
+          if (p.life<=0) return;
+          ctx.save(); ctx.globalAlpha = p.life*.8;
+          ctx.fillStyle = color;
+          ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill();
+          ctx.restore();
+          p.x+=p.vx; p.y+=p.vy; p.vy+=.25; p.life-=.028;
+        });
+        requestAnimationFrame(draw);
+      })();
+    }
+
+    const io = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return;
+      const cols  = wrap.querySelectorAll('.bar-col');
+      const sticks = wrap.querySelectorAll('.bar-stick');
+      DATA.forEach((d, i) => {
+        const h = (d.val / MAX_V) * MAX_H;
+        setTimeout(() => {
+          sticks[i].style.height = h + 'px';
+          cols[i].classList.add('lit');
+          // burst on last bar
+          if (i === DATA.length - 1) {
+            setTimeout(() => {
+              const r = sticks[i].getBoundingClientRect();
+              const wr = canvas.getBoundingClientRect();
+              burst(r.left - wr.left + r.width/2, r.top - wr.top, '#ff2d3b');
+            }, 1200);
+          }
+        }, i * 120);
+      });
+      io.disconnect();
+    }, { threshold: .3 });
+    io.observe(wrap);
+  })();
+
+  /* ══════════════════════════════════
+     EFFECTS — big counter + SVG rings
+  ══════════════════════════════════ */
+  (function initEffects() {
+    const effIO = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return;
+      // big counter
+      const cnt = document.getElementById('deaths-cnt');
+      if (cnt) scramble(cnt, 500, '', '');
+      // SVG rings
+      document.querySelectorAll('.svg-ring').forEach(ring => {
+        const fill = ring.querySelector('.ring-fill');
+        const pct  = parseFloat(ring.dataset.pct) / 100;
+        const C    = 2 * Math.PI * 42; // circumference r=42
+        fill.style.strokeDashoffset = C * (1 - pct);
+      });
+      effIO.disconnect();
+    }, { threshold: .3 });
+    const eff = document.getElementById('effects');
+    if (eff) effIO.observe(eff);
+  })();
+
+  /* ══════════════════════════════════
+     PLEDGE — ambient canvas particles
+  ══════════════════════════════════ */
+  (function initPledgeCanvas() {
+    const canvas = document.getElementById('pledge-canvas');
+    if (!canvas) return;
+    const parent = canvas.parentElement;
+    canvas.width  = parent.offsetWidth  || 800;
+    canvas.height = parent.offsetHeight || 600;
+    const ctx = canvas.getContext('2d');
+    const N = 60;
+    const ps = Array.from({length:N}, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.5 + .5,
+      vx:(Math.random()-.5)*.4,
+      vy:(Math.random()-.5)*.4,
+      a: Math.random()*.4+.1,
+    }));
+    (function tick() {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      ps.forEach(p => {
+        ctx.save(); ctx.globalAlpha = p.a;
+        ctx.fillStyle = Math.random() > .5 ? '#ff2d3b' : '#00d4ff';
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill();
+        ctx.restore();
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0) p.x = canvas.width;
+        if (p.x > canvas.width) p.x = 0;
+        if (p.y < 0) p.y = canvas.height;
+        if (p.y > canvas.height) p.y = 0;
+      });
+      requestAnimationFrame(tick);
+    })();
+  })();
+
+  /* ══════════════════════════════════
+     3D TILT CARDS + HOLOGRAPHIC SHEEN
+  ══════════════════════════════════ */
+  (function initTilt() {
+    document.querySelectorAll('.tilt-card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const r = card.getBoundingClientRect();
+        const x = (e.clientX - r.left - r.width  / 2) / (r.width  / 2);
+        const y = (e.clientY - r.top  - r.height / 2) / (r.height / 2);
+        card.style.transform = `perspective(900px) rotateX(${-y*14}deg) rotateY(${x*14}deg) scale(1.025)`;
+        card.style.boxShadow = `0 30px 60px rgba(0,0,0,.4), 0 0 30px rgba(0,212,255,.06)`;
+        const sx = ((e.clientX - r.left) / r.width  * 100).toFixed(1) + '%';
+        const sy = ((e.clientY - r.top ) / r.height * 100).toFixed(1) + '%';
+        card.style.setProperty('--sx', sx);
+        card.style.setProperty('--sy', sy);
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+        card.style.boxShadow = '';
+      });
+    });
+  })();
+
+  /* ══════════════════════════════════
+     DIGIT SCRAMBLE COUNTER
+  ══════════════════════════════════ */
+  function scramble(el, target, prefix, suffix) {
+    const CH = '0123456789';
+    let frame = 0, total = 72;
+    (function tick() {
+      if (frame >= total) { el.textContent = prefix + target + suffix; return; }
+      const p = frame / total;
+      const v = Math.round(p * target);
+      el.textContent = prefix + String(v).replace(/\d/g, d =>
+        frame < total * .55 ? CH[Math.floor(Math.random()*10)] : d
+      ) + suffix;
+      frame++;
+      requestAnimationFrame(tick);
+    })();
+  }
+
+  function glitchText(el, text) {
+    const CH = '!<>_\\/[]{}—=+*#가나다라마바';
+    let iter = 0;
+    const iv = setInterval(() => {
+      el.textContent = text.split('').map((c,i)=>i<iter?c:CH[Math.floor(Math.random()*CH.length)]).join('');
+      iter += .4;
+      if (iter > text.length) { clearInterval(iv); el.textContent = text; }
+    }, 40);
+  }
+
+  const statsIO = new IntersectionObserver(([e]) => {
+    if (!e.isIntersecting) return;
+    document.querySelectorAll('.stat-num').forEach(el => {
+      if (el.dataset.text) {
+        setTimeout(() => glitchText(el, el.dataset.text), 300);
+      } else {
+        scramble(el, +el.dataset.count, el.dataset.prefix||'', el.dataset.suffix||'');
+      }
+    });
+    statsIO.disconnect();
+  }, { threshold: .3 });
+  const statsSec = document.getElementById('stats');
+  if (statsSec) statsIO.observe(statsSec);
+
+  /* ══════════════════════════════════
+     SCROLL REVEAL (shared)
+  ══════════════════════════════════ */
+  const revealIO = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('on'); revealIO.unobserve(e.target); }
+    });
+  }, { threshold: .15 });
+  document.querySelectorAll('.reveal,.reveal-up,.reveal-left,.reveal-right').forEach(el => revealIO.observe(el));
   </script>
 </body>
 </html>

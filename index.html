@@ -60,6 +60,7 @@
       height: 100vh;
       overflow-y: scroll;
       scroll-snap-type: y mandatory;
+      -webkit-overflow-scrolling: touch;
     }
 
     .section {
@@ -113,6 +114,19 @@
       70% { transform:scale(2.4); opacity:0  }
       100%{ transform:scale(1);   opacity:0  }
     }
+    @keyframes grainShift {
+      0%   { transform:translate(0,0) }
+      20%  { transform:translate(-2%,-1%) }
+      40%  { transform:translate(1%,2%) }
+      60%  { transform:translate(2%,-1%) }
+      80%  { transform:translate(-1%,1%) }
+      100% { transform:translate(0,0) }
+    }
+    @keyframes counterPop {
+      0%   { transform:scale(1) }
+      45%  { transform:scale(1.06); color:var(--accent-gold) }
+      100% { transform:scale(1) }
+    }
 
     /* ═══════════════════════════════════════
        SCROLL REVEAL
@@ -165,6 +179,7 @@
       background:var(--bg-darker);
       display:flex; align-items:center; justify-content:center;
       pointer-events:none;
+      cursor: pointer;
     }
     #intro.gone   { pointer-events:none; }
     #intro.hidden { display:none; }
@@ -238,10 +253,11 @@
       background: radial-gradient(ellipse at 25% 55%, #1a3a5c 0%, var(--bg-dark) 65%);
     }
     .s6-grain {
-      position: absolute; inset: 0;
+      position: absolute; inset: -4%;
       background: white;
       filter: url(#grain);
       opacity: .07;
+      animation: grainShift .45s steps(1) infinite;
     }
     .s6-fg {
       height: 100%;
@@ -631,7 +647,9 @@
       display: flex;
       gap: 2rem;
       flex-wrap: wrap;
-      margin-top: 2.5rem;
+      margin-top: 2.8rem;
+      padding-top: 1.8rem;
+      border-top: 1px solid rgba(255,255,255,.08);
     }
     .stat-item {
       opacity: 0; transform: translateY(14px);
@@ -642,6 +660,7 @@
       font-family: var(--serif);
       font-size: clamp(1.2rem, 2vw, 1.6rem);
       font-weight: 700;
+      color: var(--accent-gold);
     }
     .stat-label { font-size: .72rem; color: var(--muted); margin-top: .15rem; }
 
@@ -670,7 +689,9 @@
       .hero-right { display: none; }
       .hero-left  { padding-right: 6vw; }
       .hero-ghost { font-size: 45vw; }
-      .hero-stats { gap: 1.2rem; }
+      .hero-stats { gap: 1rem; margin-top: 2rem; padding-top: 1.4rem; }
+      .stat-num   { font-size: 1.1rem; }
+      .stat-label { font-size: .66rem; }
     }
 
     /* ═══════════════════════════════════════
@@ -725,6 +746,9 @@
     .s2-infographic {
       margin-top: 1.5rem;
       max-width: 100%;
+      max-height: 180px;
+      object-fit: contain;
+      object-position: left center;
       opacity: 0; transition: opacity .8s ease .2s;
     }
     .s2-infographic.on { opacity: 1; }
@@ -806,7 +830,9 @@
       font-family: var(--serif);
       font-size: clamp(4rem, 13vw, 10rem);
       font-weight: 900;
+      transition: color .3s ease;
     }
+    .s3-num.done { animation: counterPop .6s ease forwards; }
     .s3-unit {
       font-family: var(--serif);
       font-size: clamp(1.5rem, 3vw, 2.5rem);
@@ -825,6 +851,8 @@
     .s3-infographic {
       margin-top: 2rem;
       max-width: min(780px, 90%);
+      max-height: 200px;
+      object-fit: contain;
       opacity: 0; transition: opacity .8s ease;
     }
     .s3-infographic.on { opacity: 1; }
@@ -1092,13 +1120,14 @@
     <div class="layer-fg hero-fg">
       <!-- 좌측 텍스트 -->
       <div class="hero-left">
-        <div class="hero-badge badge">2025 전남의 새 역사</div>
+        <div class="hero-badge badge">순천갑 국회의원 · 핵심 공약</div>
 
         <div class="hero-title-area">
           <span class="hero-title" id="hero-title"></span><span class="cursor-blink" id="hero-cursor"></span>
         </div>
         <p class="hero-sub"      id="hero-sub1">전남에 의과대학이 세워집니다.</p>
         <p class="hero-sub hero-sub2" id="hero-sub2">동부 순천, 그리고 서부 목포.</p>
+        <p class="hero-sub" id="hero-sub3" style="color:var(--muted);font-size:clamp(.85rem,1.5vw,1.15rem);transition-delay:.3s">드디어 그 시간이 됐습니다.</p>
 
         <div class="hero-stats">
           <div class="stat-item" id="st0">
@@ -1110,12 +1139,12 @@
             <div class="stat-label">원정진료</div>
           </div>
           <div class="stat-item" id="st2">
-            <div class="stat-num">40년</div>
-            <div class="stat-label">의대 없이 버텨온 시간</div>
+            <div class="stat-num">9.7%</div>
+            <div class="stat-label">중증응급 전원율 — 전국 2위</div>
           </div>
           <div class="stat-item" id="st3">
-            <div class="stat-num">하루 227명</div>
-            <div class="stat-label">오늘도 고향을 떠나</div>
+            <div class="stat-num">25.4%</div>
+            <div class="stat-label">상급병원 관내이용률 (전국 평균 53%)</div>
           </div>
         </div>
       </div>
@@ -1234,7 +1263,9 @@
         <span class="s3-num" id="s3-num">0</span><span class="s3-unit">건</span>
       </div>
       <p class="s3-desc reveal">
-        매년 전남 도민이 상급병원을 찾아<br>고향을 떠나는 횟수입니다.
+        매년 전남 도민이 제대로 된 의료를 받기 위해<br>
+        고향을 떠나는 횟수입니다.<br>
+        <span style="color:var(--accent-gold);font-weight:700">전남 국립의대 하나가 이 숫자를 바꿉니다.</span>
       </p>
       <img src="images/infographic_regions.png"
            class="s3-infographic" id="s3-infog"
@@ -1263,23 +1294,24 @@
         <div class="s4-cards">
           <div class="s4-card" id="s4c1">
             <div class="s4-card-badge">선례 ①</div>
-            <div class="s4-card-name">서울대학교</div>
+            <div class="s4-card-name">서울대학교 의과대학</div>
             <div class="s4-card-detail">
-              관악캠퍼스 → 연건캠퍼스<br>
+              관악캠퍼스(기초) → 연건캠퍼스(임상)<br>
               의예과 1~2학년 / 의학과 1~4학년<br>
               교육병원: 서울대병원, 분당서울대병원
             </div>
           </div>
           <div class="s4-card" id="s4c2">
             <div class="s4-card-badge">선례 ②</div>
-            <div class="s4-card-name">전남대학교</div>
+            <div class="s4-card-name">전남대학교 의과대학</div>
             <div class="s4-card-detail">
-              용봉 → 화순 → 학동 (3개 캠퍼스 분리 운영)<br>
+              용봉(기초) → 화순(전임상) → 학동(임상)<br>
+              3개 캠퍼스 분리 운영 · 이미 검증된 모델<br>
               교육병원: 전남대병원, 화순전남대병원
             </div>
           </div>
         </div>
-        <p class="s4-note">캠퍼스를 나누는 건 새로운 일이 아닙니다.</p>
+        <p class="s4-note reveal-left" style="transition-delay:.6s">캠퍼스를 나누는 건 이미 검증된 방식입니다.</p>
       </div>
 
       <!-- 우: 전남 지도 SVG -->
@@ -1332,7 +1364,7 @@
       <div class="sl-school">전남대학교 의과대학</div>
       <h2 class="sl-title" id="sl-title">학동캠퍼스</h2>
       <p class="sl-desc" id="sl-desc">5~6학년 임상실습<br>교육병원: 전남대병원</p>
-      <p class="sl-caption">이미 이런 캠퍼스가 운영되고 있습니다.<br>전남 국립의대도 같은 방식으로 가능합니다.</p>
+      <p class="sl-caption reveal">이미 이런 캠퍼스가 운영되고 있습니다.<br>전남 국립의대도 같은 방식으로 가능합니다.</p>
     </div>
     <!-- 컨트롤 -->
     <div class="sl-controls">
@@ -1357,17 +1389,17 @@
         <div class="s6-card reveal">
           <div class="s6-card-num">01 — 의료인력 정착</div>
           <div class="s6-card-title">전남에서 배운 의사가<br>전남에 남습니다.</div>
-          <p class="s6-card-text">지역에 뿌리내린 의료 인재, 쌓이면 도시가 달라집니다.</p>
+          <p class="s6-card-text">지역에서 배우고 지역에서 일하는 의사가 늘어날 때, 전남의 의료 공백은 비로소 채워집니다.</p>
         </div>
         <div class="s6-card reveal" style="transition-delay:.15s">
           <div class="s6-card-num">02 — 바이오·헬스케어</div>
-          <div class="s6-card-title">의대는 교육기관이<br>아닙니다.</div>
-          <p class="s6-card-text">연구소, 기업, 일자리가 따라옵니다. 전남이 대한민국 의료산업의 새 거점이 됩니다.</p>
+          <div class="s6-card-title">의대는 교육기관만이<br>아닙니다.</div>
+          <p class="s6-card-text">의대가 서면 연구소가 따라오고, 기업이 따라오고, 일자리가 생겨납니다. 의대 하나가 산업 생태계 전체를 바꿉니다.</p>
         </div>
         <div class="s6-card reveal" style="transition-delay:.3s">
           <div class="s6-card-num">03 — 메디컬 도시</div>
-          <div class="s6-card-title">순천과 목포가<br>전남을 찾는 이유가 됩니다.</div>
-          <p class="s6-card-text">의료와 교육과 산업이 하나로, 전남이 살아납니다.</p>
+          <div class="s6-card-title">순천과 목포,<br>전남의 새 중심이 됩니다.</div>
+          <p class="s6-card-text">의료·교육·산업이 하나의 축으로 연결될 때, 전남은 다시 일어납니다.</p>
         </div>
       </div>
     </div>
@@ -1442,9 +1474,10 @@
         </div>
       </div>
 
-      <p class="s7-note">
-        광주전남 통합시장을 꿈꾸는 두 후보가 같은 약속을 했습니다.<br>
-        순천과 목포, 양쪽에 의대와 병원을.
+      <p class="s7-note reveal">
+        강원과 제주는 20년 전에 시작했습니다.<br>
+        전북은 지금 만들고 있습니다.<br>
+        전남이 그 다음 차례입니다.
       </p>
     </div>
   </section>
@@ -1481,8 +1514,8 @@
 
       <div class="s8-divider"></div>
       <div class="s8-big reveal">매년 500명.</div>
-      <p class="s8-sub reveal">제때 치료받으면 살 수 있는 생명입니다.</p>
-      <p class="s8-closing" id="s8-closing">40년을 기다렸습니다.</p>
+      <p class="s8-sub reveal" style="transition-delay:.2s">제때 치료받으면 살 수 있는 생명입니다.</p>
+      <p class="s8-closing" id="s8-closing">더는 기다릴 수 없습니다.</p>
     </div>
   </section>
 
@@ -1502,11 +1535,11 @@
       <!-- 우: 텍스트 -->
       <div class="s9-right">
         <div class="s9-line"></div>
-        <h2 class="s9-title">더 기다리게 하지 않겠습니다.</h2>
+        <h2 class="s9-title">더 기다리게<br>하지 않겠습니다.</h2>
         <div class="s9-pledges">
-          <p class="s9-pledge" id="p0">「전남 국립의과대학 설립 특별법」 발의 및 입법 추진</p>
-          <p class="s9-pledge" id="p1">전남 동·서부 양쪽 의대 캠퍼스와 병원 동시 설립</p>
-          <p class="s9-pledge" id="p2">전남이 대한민국 의료산업의 새 거점이 되도록</p>
+          <p class="s9-pledge" id="p0">「전남 국립의과대학 설립 특별법」 발의 및 입법 완수</p>
+          <p class="s9-pledge" id="p1">순천(동부권)과 목포(서부권), 두 거점에 의대 캠퍼스와 병원 동시 설립</p>
+          <p class="s9-pledge" id="p2">의대 설립을 발판으로 전남을 대한민국 바이오·의료 산업의 새 거점으로</p>
         </div>
         <div class="s9-id">
           <div>
@@ -1549,6 +1582,7 @@ const $ = id => document.getElementById(id);
   const cursor  = $('hero-cursor');
   const sub1    = $('hero-sub1');
   const sub2    = $('hero-sub2');
+  const sub3    = $('hero-sub3');
   const stats   = [0,1,2,3].map(i => $('st'+i));
   const heroBg  = $('hero-bg');
   const snap    = $('snap');
@@ -1567,8 +1601,11 @@ const $ = id => document.getElementById(id);
           sub1.classList.add('on');
           setTimeout(() => {
             sub2.classList.add('on');
+            setTimeout(() => {
+              if (sub3) sub3.classList.add('on');
+            }, 500);
             stats.forEach((el, i) => {
-              if (el) setTimeout(() => el.classList.add('on'), i * 180);
+              if (el) setTimeout(() => el.classList.add('on'), 500 + i * 180);
             });
           }, 800);
         }, 500);
@@ -1744,6 +1781,7 @@ const $ = id => document.getElementById(id);
       const p = Math.min((now - t0) / ms, 1);
       el.textContent = Math.floor(easeOut(p) * target).toLocaleString('ko-KR');
       if (p < 1) requestAnimationFrame(frame);
+      else el.classList.add('done');
     })(t0);
   }
 
@@ -1825,27 +1863,41 @@ const $ = id => document.getElementById(id);
   const panels = ['ip1','ip2','ip3','ip4'].map(id => $(id));
   if (!intro || !star) return;
 
+  const timers = [];
+  function later(fn, ms) { const t = setTimeout(fn, ms); timers.push(t); }
+
+  function skipIntro() {
+    timers.forEach(clearTimeout);
+    intro.style.transition = 'opacity .25s ease';
+    intro.style.opacity = '0';
+    setTimeout(() => intro.classList.add('hidden'), 260);
+  }
+
+  /* 클릭 시 즉시 스킵 */
+  intro.style.pointerEvents = 'auto';
+  intro.addEventListener('click', skipIntro, { once: true });
+
   /* ① 별 등장 */
-  setTimeout(() => star.classList.add('on'), 100);
+  later(() => star.classList.add('on'), 100);
 
   /* ② 수평선 확장 */
-  setTimeout(() => { ilL.classList.add('on'); ilR.classList.add('on'); }, 700);
+  later(() => { ilL.classList.add('on'); ilR.classList.add('on'); }, 700);
 
   /* ③ 흰 패널 내려오기 (4개 순차) */
   panels.forEach((p, i) =>
-    setTimeout(() => p.classList.add('in'), 1100 + i * 80)
+    later(() => p.classList.add('in'), 1100 + i * 80)
   );
 
   /* ④ 패널 올라가기 (반대 방향) */
-  setTimeout(() => {
+  later(() => {
     panels.forEach((p, i) =>
       setTimeout(() => p.classList.add('out'), i * 60)
     );
   }, 1900);
 
   /* ⑤ 전체 fadeout → hidden */
-  setTimeout(() => intro.classList.add('fade'),  2300);
-  setTimeout(() => intro.classList.add('hidden'), 2800);
+  later(() => intro.classList.add('fade'),  2300);
+  later(() => intro.classList.add('hidden'), 2800);
 })();
 </script>
 </body>

@@ -15,7 +15,7 @@
        RESET & ROOT
     ═══════════════════════════════════════ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { font-size: 16px; }
+    html { font-size: 16px; height: 100%; }
 
     :root {
       --bg-dark:    #0D1B2A;
@@ -25,12 +25,13 @@
       --accent-red: #C1121F;
       --text:       #FFFFFF;
       --muted:      rgba(255,255,255,0.5);
-      --grid-line:  rgba(255,255,255,0.04);
+      --grid-line:  rgba(255,255,255,0.055);
       --serif: 'Noto Serif KR', serif;
       --sans:  'Noto Sans KR', sans-serif;
     }
 
     body {
+      height: 100%;
       background: var(--bg-darker);
       color: var(--text);
       font-family: var(--sans);
@@ -57,14 +58,15 @@
        SCROLL-SNAP CONTAINER
     ═══════════════════════════════════════ */
     .snap-container {
-      height: 100vh;
+      height: 100%;
       overflow-y: scroll;
       scroll-snap-type: y mandatory;
       -webkit-overflow-scrolling: touch;
     }
 
     .section {
-      height: 100vh;
+      height: 100vh; /* fallback */
+      height: 100svh;
       scroll-snap-align: start;
       position: relative;
       overflow: hidden;
@@ -392,7 +394,7 @@
 
     .s8-ghost {
       font-size: 30vw;
-      color: rgba(201,168,76,0.05);
+      color: rgba(201,168,76,0.08);
       top: 50%; left: 50%;
       transform: translate(-50%, -50%);
     }
@@ -476,7 +478,7 @@
     }
     .s9-ghost {
       font-size: 20vw;
-      color: rgba(255,255,255,.02);
+      color: rgba(255,255,255,.05);
       top: 50%; right: 5vw;
       transform: translateY(-50%);
     }
@@ -582,33 +584,29 @@
     /* Ghost "드디어" */
     .hero-ghost {
       font-size: 26vw;
-      color: rgba(201,168,76,0.05);
+      color: rgba(201,168,76,0.08);
       bottom: -3vw; right: -2vw;
       line-height: 1;
     }
 
-    /* FG 전체 레이아웃 */
+    /* FG 전체 레이아웃: 텍스트만, 사진은 absolute */
     .hero-fg {
-      display: flex;
-      align-items: stretch;
-      height: 100%;
-      padding-top: 5rem; /* nav 높이 */
-    }
-
-    /* 좌측 텍스트 영역 */
-    .hero-left {
-      flex: 1;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding: 0 6vw;
-      padding-right: 2vw;
+      height: 100%;
+      padding: 5.5rem 6vw 3rem;
+      max-width: 60%;
     }
 
-    .hero-badge { margin-bottom: 1.8rem; }
+    @media (max-width: 767px) {
+      .hero-fg { max-width: 100%; padding: 5rem 5vw 3rem; }
+    }
+
+    .hero-badge { margin-bottom: 1.4rem; }
 
     /* 타이핑 영역 */
-    .hero-title-area { min-height: 12vw; }
+    .hero-title-area { min-height: 10vw; }
     .hero-title {
       font-family: var(--serif);
       font-size: clamp(3rem, 8vw, 7rem);
@@ -664,30 +662,25 @@
     }
     .stat-label { font-size: .72rem; color: var(--muted); margin-top: .15rem; }
 
-    /* 우측 의원 사진 */
-    .hero-right {
-      flex: 0 0 38%;
-      position: relative;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      overflow: hidden;
-    }
-    .hero-img {
+    /* 의원 사진: 절대 위치 — 섹션 우측 하단 */
+    .hero-kim {
+      position: absolute;
+      right: -1%;
+      bottom: 0;
       height: 92vh;
       width: auto;
       object-fit: contain;
-      object-position: bottom center;
-      filter: drop-shadow(0 0 60px rgba(0,0,0,.85));
+      object-position: bottom right;
+      filter: drop-shadow(-30px 0 80px rgba(0,0,0,.75));
+      z-index: 8;
+      pointer-events: none;
     }
 
     /* 스크롤 힌트 */
     #s1 .scroll-hint { z-index: 11; }
 
-    /* 모바일: 사진 숨기고 텍스트만 */
     @media (max-width: 767px) {
-      .hero-right { display: none; }
-      .hero-left  { padding-right: 6vw; }
+      .hero-kim   { right: -15%; opacity: .15; height: 80vh; }
       .hero-ghost { font-size: 45vw; }
       .hero-stats { gap: 1rem; margin-top: 2rem; padding-top: 1.4rem; }
       .stat-num   { font-size: 1.1rem; }
@@ -743,15 +736,50 @@
     }
     .s2-kick.on { opacity: 1; }
 
-    .s2-infographic {
-      margin-top: 1.5rem;
-      max-width: 100%;
-      max-height: 180px;
-      object-fit: contain;
-      object-position: left center;
-      opacity: 0; transition: opacity .8s ease .2s;
+    /* S2 비교 카드 (이미지 대체) */
+    .s2-compare {
+      margin-top: 1.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: .7rem;
+      opacity: 0; transition: opacity .7s ease .2s;
     }
-    .s2-infographic.on { opacity: 1; }
+    .s2-compare.on { opacity: 1; }
+
+    .s2-cmp-card {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 2px;
+      padding: .9rem 1rem;
+    }
+    .s2-cmp-title {
+      font-size: .6rem; letter-spacing: .16em;
+      color: var(--muted); margin-bottom: .6rem; text-transform: uppercase;
+    }
+    /* 바 차트 */
+    .s2-bar-row {
+      display: flex; align-items: center; gap: .6rem; margin-bottom: .35rem;
+    }
+    .s2-bar-lbl { font-size: .68rem; color: var(--muted); flex: 0 0 52px; text-align: right; }
+    .s2-bar-track { flex: 1; height: 5px; background: rgba(255,255,255,.08); border-radius: 3px; overflow: hidden; }
+    .s2-bar-fill {
+      height: 100%; border-radius: 3px;
+      width: 0; transition: width 1.3s cubic-bezier(.4,0,.2,1) .4s;
+    }
+    .s2-compare.on .s2-bar-fill { width: var(--w); }
+    .s2-bar-val { font-family: var(--serif); font-size: .82rem; font-weight: 700; flex: 0 0 38px; }
+    .bar-red  { background: var(--accent-red); }
+    .bar-white { background: rgba(255,255,255,.75); }
+    /* 아이콘 행 */
+    .s2-icon-row { display: flex; align-items: center; gap: .4rem; flex-wrap: wrap; margin-top: .2rem; }
+    .s2-icon-lbl { font-size: .65rem; color: var(--muted); flex: 0 0 52px; text-align: right; }
+    .s2-hosp { display: flex; gap: 3px; }
+    .s2-hosp-dot {
+      width: 11px; height: 11px;
+      clip-path: polygon(50% 0%,58% 35%,96% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,4% 35%,42% 35%);
+      background: rgba(255,255,255,.6);
+    }
+    .s2-hosp-dot.active { background: var(--accent-gold); }
 
     /* 우측 지도 */
     .s2-right {
@@ -810,7 +838,7 @@
 
     .s3-ghost {
       font-size: 28vw;
-      color: rgba(201,168,76,0.05);
+      color: rgba(201,168,76,0.09);
       bottom: -4vw; left: -2vw;
     }
 
@@ -848,14 +876,40 @@
       max-width: 480px;
     }
 
-    .s3-infographic {
-      margin-top: 2rem;
-      max-width: min(780px, 90%);
-      max-height: 200px;
-      object-fit: contain;
-      opacity: 0; transition: opacity .8s ease;
+    /* S3 권역 카드 (이미지 대체) */
+    .s3-regions {
+      display: flex;
+      gap: 0;
+      margin-top: 2.4rem;
+      width: 100%; max-width: 640px;
     }
-    .s3-infographic.on { opacity: 1; }
+    .s3-rg-card {
+      flex: 1;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      padding: 1.3rem 1.5rem;
+      opacity: 0; transform: translateY(22px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .s3-rg-card:first-child { border-right: none; border-radius: 2px 0 0 2px; }
+    .s3-rg-card:last-child  { border-radius: 0 2px 2px 0; }
+    .s3-rg-card.on { opacity: 1; transform: none; }
+    .s3-rg-tag  { font-size: .58rem; letter-spacing: .2em; color: var(--accent-gold); margin-bottom: .5rem; }
+    .s3-rg-area { font-size: .7rem; color: rgba(255,255,255,.4); margin-bottom: .8rem; line-height: 1.5; }
+    .s3-rg-num  {
+      font-family: var(--serif); font-weight: 900;
+      font-size: clamp(1.3rem, 2.2vw, 1.8rem); color: white;
+      margin-bottom: .15rem;
+    }
+    .s3-rg-sub  { font-size: .7rem; color: var(--muted); line-height: 1.7; }
+    .s3-rg-sub span { color: var(--accent-red); font-weight: 700; }
+
+    @media (max-width: 767px) {
+      .s3-regions { flex-direction: column; }
+      .s3-rg-card:first-child { border-right: 1px solid rgba(255,255,255,.08); border-bottom: none; border-radius: 2px 2px 0 0; }
+      .s3-rg-card:last-child  { border-radius: 0 0 2px 2px; }
+      .s3-ghost { font-size: 50vw; }
+    }
 
     @media (max-width: 767px) {
       .s3-ghost { font-size: 50vw; }
@@ -1061,7 +1115,7 @@
     ═══════════════════════════════════════ */
     @media (max-width:767px) {
       .snap-container { scroll-snap-type: y proximity; }
-      .section        { min-height:100vh; height:auto; }
+      .section        { height: 100svh; height: 100vh; }
     }
   </style>
 </head>
@@ -1116,44 +1170,39 @@
       <span class="ghost hero-ghost">드디어</span>
     </div>
 
-    <!-- FG -->
+    <!-- 의원 사진: 절대 위치 -->
+    <img src="images/kim_serious.png" class="hero-kim" alt="김문수 의원"
+         id="hero-img-wrap" loading="eager"
+         onerror="this.style.display='none'">
+
+    <!-- FG: 텍스트 블록 -->
     <div class="layer-fg hero-fg">
-      <!-- 좌측 텍스트 -->
-      <div class="hero-left">
-        <div class="hero-badge badge">순천갑 국회의원 · 핵심 공약</div>
+      <div class="hero-badge badge">순천갑 국회의원 · 핵심 공약</div>
 
-        <div class="hero-title-area">
-          <span class="hero-title" id="hero-title"></span><span class="cursor-blink" id="hero-cursor"></span>
-        </div>
-        <p class="hero-sub"      id="hero-sub1">전남에 의과대학이 세워집니다.</p>
-        <p class="hero-sub hero-sub2" id="hero-sub2">동부 순천, 그리고 서부 목포.</p>
-        <p class="hero-sub" id="hero-sub3" style="color:var(--muted);font-size:clamp(.85rem,1.5vw,1.15rem);transition-delay:.3s">드디어 그 시간이 됐습니다.</p>
-
-        <div class="hero-stats">
-          <div class="stat-item" id="st0">
-            <div class="stat-num">143만</div>
-            <div class="stat-label">전남 동·서부 도민</div>
-          </div>
-          <div class="stat-item" id="st1">
-            <div class="stat-num">연 8만 3천 건</div>
-            <div class="stat-label">원정진료</div>
-          </div>
-          <div class="stat-item" id="st2">
-            <div class="stat-num">9.7%</div>
-            <div class="stat-label">중증응급 전원율 — 전국 2위</div>
-          </div>
-          <div class="stat-item" id="st3">
-            <div class="stat-num">25.4%</div>
-            <div class="stat-label">상급병원 관내이용률 (전국 평균 53%)</div>
-          </div>
-        </div>
+      <div class="hero-title-area">
+        <span class="hero-title" id="hero-title"></span><span class="cursor-blink" id="hero-cursor"></span>
       </div>
+      <p class="hero-sub"      id="hero-sub1">전남에 의과대학이 세워집니다.</p>
+      <p class="hero-sub hero-sub2" id="hero-sub2">동부 순천, 그리고 서부 목포.</p>
+      <p class="hero-sub" id="hero-sub3" style="color:var(--muted);font-size:clamp(.85rem,1.5vw,1.15rem);transition-delay:.3s">드디어 그 시간이 됐습니다.</p>
 
-      <!-- 우측 의원 사진 -->
-      <div class="hero-right" id="hero-img-wrap">
-        <img src="images/kim_serious.png" class="hero-img" alt="김문수 의원"
-             loading="eager"
-             onerror="document.getElementById('hero-img-wrap').style.display='none'">
+      <div class="hero-stats">
+        <div class="stat-item" id="st0">
+          <div class="stat-num">143만</div>
+          <div class="stat-label">전남 동·서부 도민</div>
+        </div>
+        <div class="stat-item" id="st1">
+          <div class="stat-num">연 8만 3천 건</div>
+          <div class="stat-label">원정진료</div>
+        </div>
+        <div class="stat-item" id="st2">
+          <div class="stat-num">9.7%</div>
+          <div class="stat-label">중증응급 전원율 — 전국 2위</div>
+        </div>
+        <div class="stat-item" id="st3">
+          <div class="stat-num">25.4%</div>
+          <div class="stat-label">관내이용률 (전국 평균 53%)</div>
+        </div>
       </div>
     </div>
 
@@ -1190,10 +1239,53 @@
 
         <p class="s2-kick" id="s2-kick">"이 숫자들이 바뀔 때가 왔습니다."</p>
 
-        <img src="images/infographic_hospital.png"
-             class="s2-infographic" id="s2-infog"
-             alt="부울경 vs 광주전남 병원 비교" loading="lazy"
-             onerror="this.style.display='none'">
+        <!-- 인포그래픽 데이터 → CSS 카드로 구현 -->
+        <div class="s2-compare" id="s2-compare">
+          <!-- 관내이용률 바 차트 -->
+          <div class="s2-cmp-card">
+            <div class="s2-cmp-title">상급병원 관내이용률</div>
+            <div class="s2-bar-row">
+              <div class="s2-bar-lbl">전남</div>
+              <div class="s2-bar-track">
+                <div class="s2-bar-fill bar-red" style="--w:25.4%"></div>
+              </div>
+              <div class="s2-bar-val" style="color:var(--accent-red)">25.4%</div>
+            </div>
+            <div class="s2-bar-row">
+              <div class="s2-bar-lbl">전국 평균</div>
+              <div class="s2-bar-track">
+                <div class="s2-bar-fill bar-white" style="--w:53%"></div>
+              </div>
+              <div class="s2-bar-val">53.0%</div>
+            </div>
+          </div>
+          <!-- 상급병원 수 비교 -->
+          <div class="s2-cmp-card">
+            <div class="s2-cmp-title">권역별 상급병원 수</div>
+            <div class="s2-icon-row">
+              <div class="s2-icon-lbl">부·울·경</div>
+              <div class="s2-hosp">
+                <div class="s2-hosp-dot active"></div>
+                <div class="s2-hosp-dot active"></div>
+                <div class="s2-hosp-dot active"></div>
+                <div class="s2-hosp-dot active"></div>
+                <div class="s2-hosp-dot active"></div>
+                <div class="s2-hosp-dot active"></div>
+                <div class="s2-hosp-dot active"></div>
+              </div>
+              <span style="font-family:var(--serif);font-size:.8rem;font-weight:700;color:var(--accent-gold)">7개</span>
+            </div>
+            <div class="s2-icon-row" style="margin-top:.4rem">
+              <div class="s2-icon-lbl">광주·전남</div>
+              <div class="s2-hosp">
+                <div class="s2-hosp-dot active"></div>
+                <div class="s2-hosp-dot active"></div>
+                <div class="s2-hosp-dot active"></div>
+              </div>
+              <span style="font-family:var(--serif);font-size:.8rem;font-weight:700;color:var(--accent-red)">3개 (광주 집중)</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- 우: 한국 지도 SVG -->
@@ -1267,10 +1359,28 @@
         고향을 떠나는 횟수입니다.<br>
         <span style="color:var(--accent-gold);font-weight:700">전남 국립의대 하나가 이 숫자를 바꿉니다.</span>
       </p>
-      <img src="images/infographic_regions.png"
-           class="s3-infographic" id="s3-infog"
-           alt="동부권 84만 / 서부권 59만 현황" loading="lazy"
-           onerror="this.style.display='none'">
+
+      <!-- 권역 데이터 카드 (이미지 대체) -->
+      <div class="s3-regions">
+        <div class="s3-rg-card" id="s3-rg0">
+          <div class="s3-rg-tag">동부권</div>
+          <div class="s3-rg-area">순천 · 여수 · 광양 · 고흥 외</div>
+          <div class="s3-rg-num">84만 명</div>
+          <div class="s3-rg-sub">
+            연 원정진료 <span>45,000건</span><br>
+            이 중 수도권 행 <span>17,000건</span>
+          </div>
+        </div>
+        <div class="s3-rg-card" id="s3-rg1" style="transition-delay:.18s">
+          <div class="s3-rg-tag">서부권</div>
+          <div class="s3-rg-area">목포 · 나주 · 영광 · 해남 외</div>
+          <div class="s3-rg-num">59만 명</div>
+          <div class="s3-rg-sub">
+            연 원정진료 <span>38,000건</span><br>
+            이 중 수도권 행 <span>13,000건</span>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -1770,7 +1880,6 @@ const $ = id => document.getElementById(id);
 /* 카운터 83,000 */
 (function initCounter() {
   const numEl = $('s3-num');
-  const infog = $('s3-infog');
   let done = false;
 
   function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
@@ -1785,12 +1894,17 @@ const $ = id => document.getElementById(id);
     })(t0);
   }
 
+  const rg0 = $('s3-rg0'), rg1 = $('s3-rg1');
+
   const io = new IntersectionObserver(entries => {
     entries.forEach(e => {
       if (!e.isIntersecting || done) return;
       done = true;
       if (numEl) runCounter(numEl, 83000, 2500);
-      setTimeout(() => { if(infog) infog.classList.add('on'); }, 1400);
+      setTimeout(() => {
+        if (rg0) rg0.classList.add('on');
+        if (rg1) rg1.classList.add('on');
+      }, 1200);
       io.unobserve(e.target);
     });
   }, { threshold: 0.4 });
@@ -1804,7 +1918,6 @@ const $ = id => document.getElementById(id);
   const DOT_IDS = Array.from({length:16}, (_,i) => 'kd'+i);
   const dataItems = [0,1,2].map(i => $('sd'+i));
   const kick   = $('s2-kick');
-  const infog  = $('s2-infog');
   let done = false;
 
   const io = new IntersectionObserver(entries => {
@@ -1831,11 +1944,12 @@ const $ = id => document.getElementById(id);
         if(el) setTimeout(() => el.classList.add('on'), delay + 400 + i*280);
       });
 
-      /* 킥 문구 + 인포그래픽 */
+      /* 킥 문구 + 비교 카드 */
+      const compare = $('s2-compare');
       setTimeout(() => {
-        if(kick)  kick.classList.add('on');
-        if(infog) infog.classList.add('on');
-      }, delay + 1600);
+        if(kick)    kick.classList.add('on');
+        if(compare) compare.classList.add('on');
+      }, delay + 1200);
 
       io.unobserve(e.target);
     });
